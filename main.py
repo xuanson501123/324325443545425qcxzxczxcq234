@@ -37,19 +37,26 @@ def git_commit_and_push(msg):
 
     remote_url = f"https://{user}:{token}@github.com/{user}/{repo}.git"
 
-    subprocess.run(["git", "config", "--global", "user.name", user])
-    subprocess.run(["git", "config", "--global", "user.email", f"{user}@users.noreply.github.com"])
-    subprocess.run(["git", "remote", "set-url", "origin", remote_url])
+    subprocess.run(["git", "config", "--global", "user.name", user], check=True)
+    subprocess.run(["git", "config", "--global", "user.email", f"{user}@users.noreply.github.com"], check=True)
+    subprocess.run(["git", "remote", "set-url", "origin", remote_url], check=True)
 
-    # Stash và Pull
-    subprocess.run(["git", "stash"])
-    subprocess.run(["git", "pull", "--rebase", "origin", "main"])
-    subprocess.run(["git", "stash", "pop"])
+    try:
+        # Stash thay đổi tạm thời (nếu có)
+        subprocess.run(["git", "stash"], check=True)
+        subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True)
+        subprocess.run(["git", "stash", "pop"], check=True)
+    except subprocess.CalledProcessError:
+        print("⚠️ Gặp lỗi khi stash hoặc pull. Thử tiếp tục...")
 
-    # Add, Commit, và Force Push
-    subprocess.run(["git", "add", get_file_path()])
-    subprocess.run(["git", "commit", "-m", msg])
-    subprocess.run(["git", "push", "--force", "origin", "main"])
+    # Add + Commit + Push (force để tránh xung đột)
+    try:
+        subprocess.run(["git", "add", get_file_path()], check=True)
+        subprocess.run(["git", "commit", "-m", msg], check=True)
+        subprocess.run(["git", "push", "--force", "origin", "main"], check=True)
+        print("✅ Đã đẩy lên GitHub.")
+    except subprocess.CalledProcessError as e:
+        print("❌ Gặp lỗi khi push:", e)
 
 
 def is_authorized(uid):
