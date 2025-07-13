@@ -1,4 +1,5 @@
 import os, json, asyncio, subprocess
+from keep_alive import keep_alive
 from datetime import datetime, timedelta
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
@@ -113,4 +114,6 @@ async def main():
 if __name__ == "__main__":
     import nest_asyncio
     nest_asyncio.apply()
+    keep_alive()
+    print("✅ Server đang chạy...")
     asyncio.get_event_loop().run_until_complete(main())
