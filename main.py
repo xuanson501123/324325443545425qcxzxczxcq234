@@ -6,7 +6,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, Con
 
 # === Cấu hình ===
 BOT_TOKEN = "7905209230:AAF-AnSHZWih_7VYa_7VhkSPn7epyn3whIU"
-AUTHORIZED_IDS = [5252425303, 987654321]  # ✅ Thay bằng Telegram user ID thật của bạn
+AUTHORIZED_IDS = [5252425303, 6172090155] 
 REPO_PATH = ""
 JSON_FILE = "index/accounts.json"
 GIT_COMMIT_MESSAGE = "Cập nhật UDID: "
@@ -82,7 +82,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data[udid] = expiry
     save_udid_data(data)
     git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
-    await update.message.reply_text(f"✅ Đã thêm UDID: {udid}\n📅 Hạn dùng: {expiry}")
+    await update.message.reply_text(f"✅ Đã duyệt UDID: {udid}\n📅 Hạn dùng: {expiry}\n⏱️ Chờ 3-5 phút có thể sử dụng Mod.")
 
 async def delete_udid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
