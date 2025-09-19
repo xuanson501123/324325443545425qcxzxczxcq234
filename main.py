@@ -67,22 +67,11 @@ def git_commit_and_push(msg):
 def is_authorized(uid):
     return uid in AUTHORIZED_IDS
 
-# === Gia hạn hoặc thêm mới ===
-def extend_expiry(udid: str, days: int):
+def extend_expiry(udid, days):
+    """Gia hạn hoặc thêm UDID mới"""
     data = load_udid_data()
-
-    old_expiry = None
-    if udid in data:
-        try:
-            old_date = datetime.strptime(data[udid], "%Y-%m-%d")
-            old_expiry = data[udid]
-        except ValueError:
-            old_date = datetime.now()
-        base_date = max(datetime.now(), old_date)
-        new_expiry = (base_date + timedelta(days=days)).strftime("%Y-%m-%d")
-    else:
-        new_expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
-
+    old_expiry = data.get(udid)
+    new_expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
     data[udid] = new_expiry
     save_udid_data(data)
     git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
@@ -139,7 +128,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     elif query.data == "custom_days":
         await query.edit_message_text("✏️ Nhập số ngày bạn muốn cấp:")
-        return WAITING_CUSTOM_DAYS
+        return WAITING_CUSTOM_DAYS   # Chuyển sang state nhập số ngày
 
 # Nhập số ngày tùy chỉnh
 async def custom_days(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -147,7 +136,7 @@ async def custom_days(update: Update, context: ContextTypes.DEFAULT_TYPE):
         days = int(update.message.text.strip())
     except ValueError:
         await update.message.reply_text("⚠️ Vui lòng nhập số nguyên hợp lệ.")
-        return WAITING_CUSTOM_DAYS
+        return WAITING_CUSTOM_DAYS  # Vẫn chờ nhập lại
 
     udid = context.user_data.get("udid")
     if not udid:
@@ -163,7 +152,8 @@ async def custom_days(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     msg += "\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
     await update.message.reply_text(msg)
-    return ConversationHandler.END
+
+    return ConversationHandler.END   # ✅ Kết thúc flow
 
 # /delete udid
 async def delete_udid(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -191,9 +181,7 @@ async def main():
     conv_handler = ConversationHandler(
         entry_points=[MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
         states={
-            WAITING_CUSTOM_DAYS: [
-                MessageHandler(filters.TEXT & ~filters.COMMAND, custom_days)
-            ]
+            WAITING_CUSTOM_DAYS: [MessageHandler(filters.TEXT & ~filters.COMMAND, custom_days)]
         },
         fallbacks=[],
     )
