@@ -67,6 +67,27 @@ def git_commit_and_push(msg):
 def is_authorized(uid):
     return uid in AUTHORIZED_IDS
 
+# === Gia hạn hoặc thêm mới ===
+def extend_expiry(udid: str, days: int):
+    data = load_udid_data()
+
+    old_expiry = None
+    if udid in data:
+        try:
+            old_date = datetime.strptime(data[udid], "%Y-%m-%d")
+            old_expiry = data[udid]
+        except ValueError:
+            old_date = datetime.now()
+        base_date = max(datetime.now(), old_date)
+        new_expiry = (base_date + timedelta(days=days)).strftime("%Y-%m-%d")
+    else:
+        new_expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
+
+    data[udid] = new_expiry
+    save_udid_data(data)
+    git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
+    return old_expiry, new_expiry
+
 # === Bot Telegram ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Gửi UDID để thêm hoặc dùng /delete <udid> để xoá.")
@@ -106,16 +127,15 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if query.data.startswith("days_"):
         days = int(query.data.split("_")[1])
-        expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
+        old_expiry, new_expiry = extend_expiry(udid, days)
 
-        data = load_udid_data()
-        data[udid] = expiry
-        save_udid_data(data)
-        git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
+        if old_expiry:
+            msg = f"🔄 UDID {udid} đã tồn tại\n📅 Hạn cũ: {old_expiry}\n➡️ Hạn mới: {new_expiry}"
+        else:
+            msg = f"✅ Đã duyệt UDID mới: {udid}\n📅 Hạn dùng: {new_expiry}"
 
-        await query.edit_message_text(
-            f"✅ Đã duyệt UDID: {udid}\n📅 Hạn dùng: {expiry}\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
-        )
+        msg += "\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
+        await query.edit_message_text(msg)
 
     elif query.data == "custom_days":
         await query.edit_message_text("✏️ Nhập số ngày bạn muốn cấp:")
@@ -134,15 +154,15 @@ async def custom_days(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ Không tìm thấy UDID. Hãy gửi lại.")
         return ConversationHandler.END
 
-    expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
-    data = load_udid_data()
-    data[udid] = expiry
-    save_udid_data(data)
-    git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
+    old_expiry, new_expiry = extend_expiry(udid, days)
 
-    await update.message.reply_text(
-        f"✅ Đã duyệt UDID: {udid}\n📅 Hạn dùng: {expiry}\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
-    )
+    if old_expiry:
+        msg = f"🔄 UDID {udid} đã tồn tại\n📅 Hạn cũ: {old_expiry}\n➡️ Hạn mới: {new_expiry}"
+    else:
+        msg = f"✅ Đã duyệt UDID mới: {udid}\n📅 Hạn dùng: {new_expiry}"
+
+    msg += "\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
+    await update.message.reply_text(msg)
     return ConversationHandler.END
 
 # /delete udid
@@ -171,10 +191,11 @@ async def main():
     conv_handler = ConversationHandler(
         entry_points=[MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
         states={
-            WAITING_CUSTOM_DAYS: [MessageHandler(filters.TEXT & ~filters.COMMAND, custom_days)]
+            WAITING_CUSTOM_DAYS: [
+                MessageHandler(filters.TEXT & ~filters.COMMAND, custom_days)
+            ]
         },
         fallbacks=[],
-        map_to_parent={}
     )
 
     app.add_handler(CommandHandler("start", start))
