@@ -1,15 +1,21 @@
 import os, json, asyncio, subprocess
 from keep_alive import keep_alive
 from datetime import datetime, timedelta
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    ApplicationBuilder, CommandHandler, MessageHandler,
+    ContextTypes, filters, CallbackQueryHandler, ConversationHandler
+)
 
 # === Cấu hình ===
 BOT_TOKEN = "7905209230:AAF-AnSHZWih_7VYa_7VhkSPn7epyn3whIU"
-AUTHORIZED_IDS = [5252425303, 6172090155] 
+AUTHORIZED_IDS = [5252425303, 6172090155]
 REPO_PATH = ""
 JSON_FILE = "index/accounts.json"
 GIT_COMMIT_MESSAGE = "Cập nhật UDID: "
+
+# === Trạng thái cho ConversationHandler ===
+WAITING_CUSTOM_DAYS = 1
 
 # === Tạo thư mục nếu chưa có ===
 os.makedirs(os.path.join(REPO_PATH, "index"), exist_ok=True)
@@ -27,6 +33,7 @@ def load_udid_data():
 def save_udid_data(data):
     with open(get_file_path(), "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
+
 def git_commit_and_push(msg):
     token = os.getenv("GH_TOKEN")
     user = os.getenv("GH_USER")
@@ -43,14 +50,12 @@ def git_commit_and_push(msg):
     subprocess.run(["git", "remote", "set-url", "origin", remote_url], check=True)
 
     try:
-        # Stash thay đổi tạm thời (nếu có)
         subprocess.run(["git", "stash"], check=True)
         subprocess.run(["git", "pull", "--rebase", "origin", "main"], check=True)
         subprocess.run(["git", "stash", "pop"], check=True)
     except subprocess.CalledProcessError:
         print("⚠️ Gặp lỗi khi stash hoặc pull. Thử tiếp tục...")
 
-    # Add + Commit + Push (force để tránh xung đột)
     try:
         subprocess.run(["git", "add", get_file_path()], check=True)
         subprocess.run(["git", "commit", "-m", msg], check=True)
@@ -59,7 +64,6 @@ def git_commit_and_push(msg):
     except subprocess.CalledProcessError as e:
         print("❌ Gặp lỗi khi push:", e)
 
-
 def is_authorized(uid):
     return uid in AUTHORIZED_IDS
 
@@ -67,6 +71,7 @@ def is_authorized(uid):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("✅ Gửi UDID để thêm hoặc dùng /delete <udid> để xoá.")
 
+# Nhận UDID từ user
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await update.message.reply_text("❌ Không có quyền.")
@@ -77,13 +82,70 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ UDID không hợp lệ.")
         return
 
+    context.user_data["udid"] = udid  # Lưu tạm UDID
+
+    keyboard = [
+        [InlineKeyboardButton("1 day", callback_data="days_1")],
+        [InlineKeyboardButton("31 days", callback_data="days_31")],
+        [InlineKeyboardButton("1000 days", callback_data="days_1000")],
+        [InlineKeyboardButton("Tùy chỉnh", callback_data="custom_days")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text(f"📌 Chọn thời hạn cho UDID: {udid}", reply_markup=reply_markup)
+
+# Xử lý chọn nút
+async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    udid = context.user_data.get("udid")
+
+    if not udid:
+        await query.edit_message_text("⚠️ Không tìm thấy UDID. Hãy gửi lại.")
+        return
+
+    if query.data.startswith("days_"):
+        days = int(query.data.split("_")[1])
+        expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
+
+        data = load_udid_data()
+        data[udid] = expiry
+        save_udid_data(data)
+        git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
+
+        await query.edit_message_text(
+            f"✅ Đã duyệt UDID: {udid}\n📅 Hạn dùng: {expiry}\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
+        )
+
+    elif query.data == "custom_days":
+        await query.edit_message_text("✏️ Nhập số ngày bạn muốn cấp:")
+        return WAITING_CUSTOM_DAYS
+
+# Nhập số ngày tùy chỉnh
+async def custom_days(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        days = int(update.message.text.strip())
+    except ValueError:
+        await update.message.reply_text("⚠️ Vui lòng nhập số nguyên hợp lệ.")
+        return WAITING_CUSTOM_DAYS
+
+    udid = context.user_data.get("udid")
+    if not udid:
+        await update.message.reply_text("⚠️ Không tìm thấy UDID. Hãy gửi lại.")
+        return ConversationHandler.END
+
+    expiry = (datetime.now() + timedelta(days=days)).strftime("%Y-%m-%d")
     data = load_udid_data()
-    expiry = (datetime.now() + timedelta(days=31)).strftime("%Y-%m-%d")
     data[udid] = expiry
     save_udid_data(data)
     git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
-    await update.message.reply_text(f"✅ Đã duyệt UDID: {udid}\n📅 Hạn dùng: {expiry}\n⏱️ Chờ 3-5 phút có thể sử dụng Mod.")
 
+    await update.message.reply_text(
+        f"✅ Đã duyệt UDID: {udid}\n📅 Hạn dùng: {expiry}\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
+    )
+    return ConversationHandler.END
+
+# /delete udid
 async def delete_udid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authorized(update.effective_user.id):
         await update.message.reply_text("❌ Không có quyền.")
@@ -105,9 +167,21 @@ async def delete_udid(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # === Khởi chạy Bot ===
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    conv_handler = ConversationHandler(
+        entry_points=[MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
+        states={
+            WAITING_CUSTOM_DAYS: [MessageHandler(filters.TEXT & ~filters.COMMAND, custom_days)]
+        },
+        fallbacks=[],
+        map_to_parent={}
+    )
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("delete", delete_udid))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(conv_handler)
+    app.add_handler(CallbackQueryHandler(button_callback))
+
     print("✅ Bot đang chạy...")
     await app.run_polling()
 
