@@ -13,9 +13,7 @@ AUTHORIZED_IDS = [5252425303, 6172090155]
 REPO_PATH = ""
 JSON_FILE = "index/accounts.json"
 GIT_COMMIT_MESSAGE = "Cập nhật UDID: "
-
-# === Trạng thái cho ConversationHandler ===
-WAITING_CUSTOM_DAYS = 1
+MAX_DAYS = 1000  # Giới hạn tối đa
 
 # === Tạo thư mục nếu chưa có ===
 os.makedirs(os.path.join(REPO_PATH, "index"), exist_ok=True)
@@ -77,9 +75,19 @@ def extend_expiry(udid, days):
     git_commit_and_push(GIT_COMMIT_MESSAGE + udid)
     return old_expiry, new_expiry
 
+def delete_udid_by_value(udid):
+    """Xoá UDID"""
+    data = load_udid_data()
+    if udid in data:
+        del data[udid]
+        save_udid_data(data)
+        git_commit_and_push(f"Xoá UDID: {udid}")
+        return True
+    return False
+
 # === Bot Telegram ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("✅ Gửi UDID để thêm hoặc dùng /delete <udid> để xoá.")
+    await update.message.reply_text("✅ Gửi UDID để thêm hoặc chọn thời hạn bằng nút ➖➕⏪⏩.")
 
 # Nhận UDID từ user
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -92,87 +100,74 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("⚠️ UDID không hợp lệ.")
         return
 
-    context.user_data["udid"] = udid  # Lưu tạm UDID
+    # Lưu UDID + số ngày mặc định
+    context.user_data["udid"] = udid
+    context.user_data["days"] = 31
 
     keyboard = [
-        [InlineKeyboardButton("1 day", callback_data="days_1")],
-        [InlineKeyboardButton("31 days", callback_data="days_31")],
-        [InlineKeyboardButton("1000 days", callback_data="days_1000")],
-        [InlineKeyboardButton("Tùy chỉnh", callback_data="custom_days")]
+        [InlineKeyboardButton("-30", callback_data="decrease_30"),
+         InlineKeyboardButton("-7", callback_data="decrease_7"),
+         InlineKeyboardButton("-1", callback_data="decrease_1"),
+         InlineKeyboardButton("+1", callback_data="increase_1"),
+         InlineKeyboardButton("+7", callback_data="increase_7"),
+         InlineKeyboardButton("+30", callback_data="increase_30")],
+        [InlineKeyboardButton("✅ Xác nhận", callback_data="confirm")],
+        [InlineKeyboardButton("🗑 Xoá UDID", callback_data="delete_udid")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text(f"📌 Chọn thời hạn cho UDID: {udid}", reply_markup=reply_markup)
+    await update.message.reply_text(
+        f"📌 UDID: {udid}\n📅 Thời hạn: {context.user_data['days']} ngày",
+        reply_markup=reply_markup
+    )
 
-# Xử lý chọn nút
+# Xử lý nút bấm
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
+
     udid = context.user_data.get("udid")
+    days = context.user_data.get("days", 7)
 
     if not udid:
         await query.edit_message_text("⚠️ Không tìm thấy UDID. Hãy gửi lại.")
         return
 
-    if query.data.startswith("days_"):
-        days = int(query.data.split("_")[1])
-        old_expiry, new_expiry = extend_expiry(udid, days)
+    # Tăng giảm số ngày
+    if query.data.startswith("increase_") or query.data.startswith("decrease_"):
+        step = int(query.data.split("_")[1])
+        if query.data.startswith("increase_"):
+            context.user_data["days"] = min(MAX_DAYS, days + step)
+        else:
+            context.user_data["days"] = max(1, days - step)
 
+        new_days = context.user_data["days"]
+        await query.edit_message_text(
+            f"📌 UDID: {udid}\n📅 Thời hạn: {new_days} ngày",
+            reply_markup=query.message.reply_markup
+        )
+        return
+    # Xác nhận
+    if query.data == "confirm":
+        days = context.user_data["days"]
+        old_expiry, new_expiry = extend_expiry(udid, days)
         if old_expiry:
             msg = f"🔄 UDID {udid} đã tồn tại\n📅 Hạn cũ: {old_expiry}\n➡️ Hạn mới: {new_expiry}"
         else:
             msg = f"✅ Đã duyệt UDID mới: {udid}\n📅 Hạn dùng: {new_expiry}"
-
         msg += "\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
-        await query.edit_message_text(msg)
+        msg += "\nVideo hướng dẫn sử dụng mod Youtube: @tiptipmodios."
 
-    elif query.data == "custom_days":
-        await query.edit_message_text("✏️ Nhập số ngày bạn muốn cấp:")
-        return WAITING_CUSTOM_DAYS   # Chuyển sang state nhập số ngày
-
-# Nhập số ngày tùy chỉnh
-async def custom_days(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    try:
-        days = int(update.message.text.strip())
-    except ValueError:
-        await update.message.reply_text("⚠️ Vui lòng nhập số nguyên hợp lệ.")
-        return WAITING_CUSTOM_DAYS  # Vẫn chờ nhập lại
-
-    udid = context.user_data.get("udid")
-    if not udid:
-        await update.message.reply_text("⚠️ Không tìm thấy UDID. Hãy gửi lại.")
-        return ConversationHandler.END
-
-    old_expiry, new_expiry = extend_expiry(udid, days)
-
-    if old_expiry:
-        msg = f"🔄 UDID {udid} đã tồn tại\n📅 Hạn cũ: {old_expiry}\n➡️ Hạn mới: {new_expiry}"
-    else:
-        msg = f"✅ Đã duyệt UDID mới: {udid}\n📅 Hạn dùng: {new_expiry}"
-
-    msg += "\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
-    await update.message.reply_text(msg)
-
-    return ConversationHandler.END   # ✅ Kết thúc flow
-
-# /delete udid
-async def delete_udid(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not is_authorized(update.effective_user.id):
-        await update.message.reply_text("❌ Không có quyền.")
-        return
-    if not context.args:
-        await update.message.reply_text("⚠️ Dùng: /delete <udid>")
+        await query.edit_message_text(msg, parse_mode="HTML")
         return
 
-    udid = context.args[0].strip().upper()
-    data = load_udid_data()
-    if udid in data:
-        del data[udid]
-        save_udid_data(data)
-        git_commit_and_push(f"Xoá UDID: {udid}")
-        await update.message.reply_text(f"🗑 Đã xoá {udid}")
-    else:
-        await update.message.reply_text("⚠️ Không tìm thấy UDID.")
+
+    # Xoá UDID
+    if query.data == "delete_udid":
+        if delete_udid_by_value(udid):
+            await query.edit_message_text(f"🗑 Đã xoá UDID: {udid}")
+        else:
+            await query.edit_message_text("⚠️ Không tìm thấy UDID để xoá.")
 
 # === Khởi chạy Bot ===
 async def main():
@@ -180,14 +175,11 @@ async def main():
 
     conv_handler = ConversationHandler(
         entry_points=[MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)],
-        states={
-            WAITING_CUSTOM_DAYS: [MessageHandler(filters.TEXT & ~filters.COMMAND, custom_days)]
-        },
+        states={},
         fallbacks=[],
     )
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("delete", delete_udid))
     app.add_handler(conv_handler)
     app.add_handler(CallbackQueryHandler(button_callback))
 
