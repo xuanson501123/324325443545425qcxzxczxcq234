@@ -1,4 +1,3 @@
-python-telegram-bot==20.7
-telegram
+python-telegram-bot==20.3
 nest-asyncio
-flask
+Flask
