@@ -1,4 +1,4 @@
-import os, json, asyncio, subprocess
+import os, json, asyncio, subprocess, re
 from keep_alive import keep_alive
 from datetime import datetime, timedelta
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -85,9 +85,16 @@ def delete_udid_by_value(udid):
         return True
     return False
 
+# === Kiểm tra định dạng UDID/UUID ===
+def is_valid_udid_or_uuid(udid):
+    udid = udid.strip().upper()
+    udid_regex = r"^[A-F0-9]{40}$"  # UDID iOS
+    uuid_regex = r"^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"  # UUID chuẩn
+    return bool(re.fullmatch(udid_regex, udid) or re.fullmatch(uuid_regex, udid))
+
 # === Bot Telegram ===
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("✅ Gửi UDID để thêm hoặc chọn thời hạn bằng nút ➖➕⏪⏩.")
+    await update.message.reply_text("✅ Gửi UDID hoặc UUID để thêm hoặc chọn thời hạn bằng nút ➖➕⏪⏩.")
 
 # Nhận UDID từ user
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -96,13 +103,34 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     udid = update.message.text.strip().upper()
-    if not udid:
-        await update.message.reply_text("⚠️ UDID không hợp lệ.")
+
+    # Nếu đang thay thế UDID
+    if "replace_days" in context.user_data:
+        new_udid = udid
+        old_expiry = context.user_data.pop("replace_days")
+        data = load_udid_data()
+        data[new_udid] = old_expiry
+        save_udid_data(data)
+        git_commit_and_push(f"Thay thế UDID: {new_udid} (giữ hạn {old_expiry})")
+        await update.message.reply_text(f"♻️ UDID đã được thay thế bằng {new_udid}\n📅 Hạn giữ nguyên: {old_expiry}")
+        return
+
+    # Kiểm tra định dạng UDID/UUID
+    if not is_valid_udid_or_uuid(udid):
+        await update.message.reply_text(
+            "⚠️ UDID/UUID không hợp lệ.\n"
+            "- UDID iOS: 40 ký tự Hex (0–9, A–F)\n"
+            "- UUID chuẩn: 36 ký tự (8-4-4-4-12 hex)"
+        )
         return
 
     # Lưu UDID + số ngày mặc định
     context.user_data["udid"] = udid
     context.user_data["days"] = 31
+
+    # Kiểm tra UDID đã tồn tại
+    data = load_udid_data()
+    udid_exists = udid in data
 
     keyboard = [
         [InlineKeyboardButton("-30", callback_data="decrease_30"),
@@ -114,10 +142,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("✅ Xác nhận", callback_data="confirm")],
         [InlineKeyboardButton("🗑 Xoá UDID", callback_data="delete_udid")]
     ]
+
+    if udid_exists:
+        keyboard.append([InlineKeyboardButton("♻️ Thay thế UDID mới", callback_data="replace_udid")])
+
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        f"📌 UDID: {udid}\n📅 Thời hạn: {context.user_data['days']} ngày",
+        f"📌 UDID/UUID: {udid}\n📅 Thời hạn: {context.user_data['days']} ngày"
+        + ("\n⚠️ UDID này đã tồn tại!" if udid_exists else ""),
         reply_markup=reply_markup
     )
 
@@ -143,31 +176,42 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         new_days = context.user_data["days"]
         await query.edit_message_text(
-            f"📌 UDID: {udid}\n📅 Thời hạn: {new_days} ngày",
+            f"📌 UDID/UUID: {udid}\n📅 Thời hạn: {new_days} ngày",
             reply_markup=query.message.reply_markup
         )
         return
-    # Xác nhận
+
+    # Xác nhận thêm/gia hạn
     if query.data == "confirm":
         days = context.user_data["days"]
         old_expiry, new_expiry = extend_expiry(udid, days)
         if old_expiry:
-            msg = f"🔄 UDID {udid} đã tồn tại\n📅 Hạn cũ: {old_expiry}\n➡️ Hạn mới: {new_expiry}"
+            msg = f"🔄 UDID/UUID {udid} đã tồn tại\n📅 Hạn cũ: {old_expiry}\n➡️ Hạn mới: {new_expiry}"
         else:
-            msg = f"✅ Đã duyệt UDID mới: {udid}\n📅 Hạn dùng: {new_expiry}"
+            msg = f"✅ Đã duyệt UDID/UUID mới: {udid}\n📅 Hạn dùng: {new_expiry}"
         msg += "\n⏱️ Chờ 3-5 phút có thể sử dụng Mod."
         msg += "\nVideo hướng dẫn sử dụng mod Youtube: @tiptipmodios."
-
         await query.edit_message_text(msg, parse_mode="HTML")
         return
-
 
     # Xoá UDID
     if query.data == "delete_udid":
         if delete_udid_by_value(udid):
-            await query.edit_message_text(f"🗑 Đã xoá UDID: {udid}")
+            await query.edit_message_text(f"🗑 Đã xoá UDID/UUID: {udid}")
         else:
-            await query.edit_message_text("⚠️ Không tìm thấy UDID để xoá.")
+            await query.edit_message_text("⚠️ Không tìm thấy UDID/UUID để xoá.")
+        return
+
+    # Thay thế UDID mới giữ nguyên hạn
+    if query.data == "replace_udid":
+        old_expiry = load_udid_data().get(udid)
+        if not old_expiry:
+            await query.edit_message_text("⚠️ Không tìm thấy UDID để thay thế.")
+            return
+        delete_udid_by_value(udid)
+        context.user_data["replace_days"] = old_expiry
+        await query.edit_message_text("📌 Gửi UDID mới để thay thế (hạn cũ sẽ được giữ nguyên):")
+        return
 
 # === Khởi chạy Bot ===
 async def main():
