@@ -7,9 +7,7 @@ from telegram.ext import (
     ContextTypes, filters, CallbackQueryHandler, ConversationHandler
 )
 
-# === Cấu hình ===
-BOT_TOKEN = "7905209230:AAF-AnSHZWih_7VYa_7VhkSPn7epyn3whIU"
-AUTHORIZED_IDS = [5252425303, 6172090155]
+
 REPO_PATH = ""
 JSON_FILE = "index/accounts.json"
 GIT_COMMIT_MESSAGE = "Cập nhật UDID: "
