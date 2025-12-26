@@ -1,0 +1,8 @@
+.env
+.env.save
+bot.log
+datas/
+main.py
+main.py.save
+__pycache__/
+
