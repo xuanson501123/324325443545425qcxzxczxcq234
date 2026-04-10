@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipTip Key</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #f5c842;
+            --gold2: #e8a020;
+            --bg1: #0d0d1a;
+            --bg2: #111128;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f0f0f0;
+            --muted: rgba(255, 255, 255, 0.38);
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg1);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated background ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99, 60, 255, 0.18) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(245, 200, 66, 0.10) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 60% 30%, rgba(0, 180, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Floating orbs ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.18;
+            pointer-events: none;
+            z-index: 0;
+            animation: drift 12s ease-in-out infinite alternate;
+        }
+
+        .orb1 {
+            width: 340px;
+            height: 340px;
+            background: #6c3fff;
+            top: -80px;
+            left: -80px;
+            animation-delay: 0s;
+        }
+
+        .orb2 {
+            width: 260px;
+            height: 260px;
+            background: #f5c842;
+            bottom: -60px;
+            right: -60px;
+            animation-delay: -4s;
+        }
+
+        .orb3 {
+            width: 200px;
+            height: 200px;
+            background: #00b4ff;
+            top: 50%;
+            left: 60%;
+            animation-delay: -8s;
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(30px, 20px) scale(1.08);
+            }
+        }
+
+        /* ── Wrapper ── */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 440px;
+            padding: 20px 16px 40px;
+        }
+
+        /* ── Top badge ── */
+        .top-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+
+        .top-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2ecc71;
+            box-shadow: 0 0 8px #2ecc71;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.4);
+            }
+        }
+
+        .top-badge span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* ── Main card ── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px 28px 32px;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.04),
+                0 24px 64px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.07);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* shimmer line on top */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.6;
+        }
+
+        /* ── Icon ── */
+        .icon-wrap {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #6c3fff22, #f5c84222);
+            border: 1px solid rgba(245, 200, 66, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 24px rgba(108, 63, 255, 0.2);
+        }
+
+        /* ── Title ── */
+        .card h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, #fff 30%, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+
+        .card .sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-bottom: 28px;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0 -28px 24px;
+        }
+
+        /* ── Key section ── */
+        .key-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .key-box {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(245, 200, 66, 0.2);
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .key-box:hover {
+            border-color: rgba(245, 200, 66, 0.45);
+        }
+
+        .key-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .key-text {
+            flex: 1;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.3px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ── Copy button ── */
+        .btn-copy {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: #0d0d1a;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(245, 200, 66, 0.25);
+            letter-spacing: 0.3px;
+            margin-bottom: 20px;
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(245, 200, 66, 0.35);
+        }
+
+        .btn-copy:active {
+            transform: translateY(0);
+            opacity: 0.85;
+        }
+
+        .btn-copy svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ── Info pills ── */
+        .pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .pill {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .pill .dot-pill {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        /* ── Notice ── */
+        .notice {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 0.78rem;
+            color: var(--muted);
+            line-height: 1.7;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .notice .notice-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ── Error state ── */
+        .error-wrap {
+            text-align: center;
+            padding: 12px 0;
+        }
+
+        .error-wrap .err-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .error-wrap h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ff6b6b;
+        }
+
+        .error-wrap p {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ── Footer ── */
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: linear-gradient(135deg, #1a2a1a, #1e3a1e);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+
+    <div class="wrapper">
+
+        <div class="top-badge">
+            <div class="dot"></div>
+            <span>TipTip Mod iOS</span>
+        </div>
+
+        <div class="card" id="main-card">
+            <!-- filled by JS -->
+        </div>
+
+        <div class="footer">T.me/gamemodios · Powered by TipTip </div>
+    </div>
+
+    <div id="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+            <polyline points="20 6 9 17 4 12" />
+        </svg>
+        Đã sao chép key!
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const key = (params.get('k') || '').trim();
+        const card = document.getElementById('main-card');
+
+        function detectType(k) {
+            const l = k.toLowerCase();
+            if (l.includes('1day')) return { label: 'Vip 1 · 1 ngày', color: '#f5c842' };
+            if (l.includes('7day')) return { label: 'Vip 1 · 7 ngày', color: '#f5c842' };
+            if (l.includes('30day')) return { label: 'Vip 1 · 30 ngày', color: '#f5c842' };
+            return { label: 'Key kích hoạt', color: '#f5c842' };
+        }
+
+        if (key) {
+            const type = detectType(key);
+            card.innerHTML = `
+      <div class="icon-wrap">🎮</div>
+      <h1>Key Kích Hoạt</h1>
+      <p class="sub">Sao chép và nhập vào ứng dụng để kích hoạt</p>
+      <div class="divider"></div>
+
+      <p class="key-label">🔑 Key của bạn</p>
+      <div class="key-box">
+        <span class="key-icon">✦</span>
+        <span class="key-text" id="key-val">${key}</span>
+      </div>
+
+      <button class="btn-copy" onclick="copyKey()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Sao chép Key
+      </button>
+
+      <div class="pills">
+        <div class="pill"><div class="dot-pill"></div>${type.label}</div>
+        <div class="pill"><div class="dot-pill" style="background:#6c3fff"></div>iOS Only</div>
+        <div class="pill"><div class="dot-pill" style="background:#00b4ff"></div>Tip Tip</div>
+      </div>
+
+      <div class="notice">
+        <span class="notice-icon">💡</span>
+        <span>Mở app → vào phần nhập key → dán key này vào và xác nhận. Key chỉ có hiệu lực trong thời hạn ghi trên.</span>
+      </div>
+    `;
+        } else {
+            card.innerHTML = `
+      <div class="error-wrap">
+        <div class="err-icon">🔒</div>
+        <h2>Không tìm thấy key</h2>
+        <p>Link không hợp lệ hoặc đã hết hạn.<br>Vui lòng liên hệ admin để lấy link mới.</p>
+      </div>
+    `;
+        }
+
+        function copyKey() {
+            const val = document.getElementById('key-val');
+            if (!val) return;
+            navigator.clipboard.writeText(val.textContent).then(() => {
+                const t = document.getElementById('toast');
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 2200);
+            });
+        }
+    </script>
+</body>
+
+</html>
