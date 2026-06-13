@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipTip - Daily Auto Key</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .device-info {
+            background: #f0f8ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .device-info label {
+            color: #667eea;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .device-info .value {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            word-break: break-all;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            background: #f0f8ff;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .key-display {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            word-break: break-all;
+            color: #28a745;
+            border: 2px dashed #28a745;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            margin: 0 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .step.active {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f0f8ff;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #667eea;
+        }
+
+        .info-item label {
+            font-size: 11px;
+            color: #667eea;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-item .val {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔑 TipTip Auto Key</h1>
+        <p class="subtitle">Get your free daily key instantly</p>
+
+        <!-- Step indicator -->
+        <div class="step-indicator">
+            <div class="step active" id="step1">①<br>Verify</div>
+            <div class="step" id="step2">②<br>Generate</div>
+            <div class="step" id="step3">③<br>Complete</div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+            <div class="info-item" style="grid-column: span 2;">
+                <label>📱 Your Device UDID:</label>
+                <div class="val" id="udidDisplay" style="font-size: 10px;">Loading...</div>
+            </div>
+            <div class="info-item" style="grid-column: span 2;">
+                <label>� Valid Until:</label>
+                <div class="val" id="expiryDisplay">Loading...</div>
+            </div>
+        </div>
+
+        <div class="alert alert-info">
+            ℹ️ <strong>Important:</strong><br>
+            • Key is generated based on your device UDID<br>
+            • Cannot be shared with other devices<br>
+            • Refreshes daily at 00:00 UTC
+        </div>
+
+        <button class="btn btn-primary" id="generateBtn" onclick="generateKey()" disabled>
+            🎯 Generate Free Key
+        </button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p><strong>Generating your key...</strong></p>
+            <p style="font-size: 12px; color: #999;">Please wait a moment</p>
+        </div>
+
+        <div class="result" id="result">
+            <div class="success-icon">🎉</div>
+            <h3 style="color: #28a745; margin-bottom: 15px; text-align: center;">
+                Key Generated Successfully!
+            </h3>
+            <div class="key-display" id="keyDisplay"></div>
+            <button class="btn btn-success" onclick="copyKey()">
+                📋 Copy Key & Return to App
+            </button>
+            <div class="alert alert-warning">
+                <strong>⚠️ Important Notes:</strong><br>
+                • This key only works on your device<br>
+                • Valid until <span id="expiryTime"></span><br>
+                • Get a new key tomorrow
+            </div>
+        </div>
+
+        <div class="alert alert-danger" id="errorMsg" style="display:none;"></div>
+
+        <div class="footer">
+            🎮 TipTip MOD © 2026<br>
+            Keys refresh daily at 00:00 UTC
+        </div>
+    </div>
+
+    <script>
+        // ===== GET PARAMETERS FROM URL =====
+        const urlParams = new URLSearchParams(window.location.search);
+        const indexCode = urlParams.get('code'); // 9 digits
+        const deviceId = urlParams.get('udid');
+
+        let generatedKey = '';
+
+        // ===== VALIDATE PARAMETERS =====
+        window.addEventListener('load', () => {
+            if (!indexCode) {
+                showError('❌ Invalid link! Missing index code.');
+                return;
+            }
+
+            // Validate index code (must be 9 digits)
+            if (!/^\d{9}$/.test(indexCode)) {
+                showError('❌ Invalid index code! Must be 9 digits.');
+                return;
+            }
+
+            if (!deviceId) {
+                showError('❌ Device ID not found! Please open this link from within the app.');
+                return;
+            }
+
+            // Display info
+            document.getElementById('udidDisplay').innerText = deviceId.substring(0, 12) + '...';
+
+            // Calculate expiry (tomorrow 00:00 UTC)
+            const tomorrow = new Date();
+            tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+            tomorrow.setUTCHours(0, 0, 0, 0);
+            const expiryStr = tomorrow.toISOString().split('T')[0] + ' 00:00 UTC';
+            document.getElementById('expiryDisplay').innerText = expiryStr;
+
+            // Enable generate button
+            document.getElementById('generateBtn').disabled = false;
+
+            console.log('UDID:', deviceId);
+            console.log('Index Code:', indexCode);
+        });
+
+        function showError(message) {
+            document.getElementById('errorMsg').innerText = message;
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('generateBtn').disabled = true;
+        }
+
+        function generateKey() {
+            // Update steps
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+
+            // Hide error
+            document.getElementById('errorMsg').style.display = 'none';
+
+            // Show loading
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('generateBtn').disabled = true;
+
+            // Simulate processing delay (can add ads countdown here)
+            setTimeout(() => {
+                // Generate key
+                generatedKey = generateKeyFromUDID(deviceId, indexCode);
+
+                // Update steps
+                document.getElementById('step2').classList.add('completed');
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step3').classList.add('active');
+                document.getElementById('step3').classList.add('completed');
+
+                // Show result
+                document.getElementById('keyDisplay').innerText = generatedKey;
+
+                // Set expiry time in result
+                const tomorrow = new Date();
+                tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+                tomorrow.setUTCHours(0, 0, 0, 0);
+                document.getElementById('expiryTime').innerText = tomorrow.toISOString().split('T')[0] + ' 00:00 UTC';
+
+                document.getElementById('result').classList.add('show');
+                document.getElementById('loading').classList.remove('show');
+            }, 2000); // 2 seconds simulation (or wait for ads)
+        }
+
+        function generateKeyFromUDID(udid, indexCode) {
+            // Clean UDID: remove dashes, uppercase
+            let cleanUDID = udid.replace(/-/g, '').toUpperCase();
+
+            // Pad if too short
+            while (cleanUDID.length < 36) {
+                cleanUDID += cleanUDID;
+            }
+
+            // Generate key part from index code (9 digits)
+            let keyPart = '';
+            for (let i = 0; i < indexCode.length; i++) {
+                let digit = parseInt(indexCode[i]);
+                if (isNaN(digit)) continue;
+
+                // Wrap around if index exceeds length
+                let index = digit % cleanUDID.length;
+                keyPart += cleanUDID[index];
+            }
+
+            // Get today's date (UTC)
+            const today = new Date();
+            const year = today.getUTCFullYear();
+            const month = String(today.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(today.getUTCDate()).padStart(2, '0');
+            const dateStr = `${year}${month}${day}`;
+
+            return `TipTip-${dateStr}-${keyPart}`;
+        }
+
+        function copyKey() {
+            const keyText = document.getElementById('keyDisplay').innerText;
+
+            // Copy to clipboard
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(keyText).then(() => {
+                    showCopySuccess();
+                }).catch(() => {
+                    fallbackCopy(keyText);
+                });
+            } else {
+                fallbackCopy(keyText);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showCopySuccess();
+        }
+
+        function showCopySuccess() {
+            const btn = document.querySelector('.btn-success');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '✅ Copied! Return to App';
+            btn.style.background = '#28a745';
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+
+            // Optional: Show alert on mobile
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                setTimeout(() => {
+                    alert('✅ Key copied!\n\nPlease return to TipTip app and paste the key into the input field, then tap "Confirm".');
+                }, 500);
+            }
+        }
+    </script>
+</body>
+
+</html>
