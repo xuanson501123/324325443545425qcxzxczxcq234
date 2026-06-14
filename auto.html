@@ -306,10 +306,10 @@
             ℹ️ <strong>Important:</strong><br>
             • Key is generated based on your device UDID<br>
             • Cannot be shared with other devices<br>
-            • Refreshes daily at 00:00 UTC
+            • Refreshes daily at 00:30 UTC
         </div>
 
-        <button class="btn btn-primary" id="generateBtn" onclick="generateKey()" disabled>
+        <button class="btn btn-primary" id="generateBtn" onclick="generateKey()" disabled style="display:none;">
             🎯 Generate Free Key
         </button>
 
@@ -340,7 +340,7 @@
 
         <div class="footer">
             🎮 TipTip MOD © 2026<br>
-            Keys refresh daily at 00:00 UTC
+            Keys refresh daily at 00:30 UTC
         </div>
     </div>
 
@@ -373,11 +373,11 @@
             // Display info
             document.getElementById('udidDisplay').innerText = deviceId.substring(0, 12) + '...';
 
-            // Calculate expiry (tomorrow 00:00 UTC)
+            // Calculate expiry (tomorrow 00:30 UTC)
             const tomorrow = new Date();
             tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
             tomorrow.setUTCHours(0, 0, 0, 0);
-            const expiryStr = tomorrow.toISOString().split('T')[0] + ' 00:00 UTC';
+            const expiryStr = tomorrow.toISOString().split('T')[0] + ' 00:30 UTC';
             document.getElementById('expiryDisplay').innerText = expiryStr;
 
             // Enable generate button
@@ -385,6 +385,9 @@
 
             console.log('UDID:', deviceId);
             console.log('Index Code:', indexCode);
+
+            // Auto generate key when all info is ready
+            generateKey();
         });
 
         function showError(message) {
@@ -425,7 +428,7 @@
                 const tomorrow = new Date();
                 tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
                 tomorrow.setUTCHours(0, 0, 0, 0);
-                document.getElementById('expiryTime').innerText = tomorrow.toISOString().split('T')[0] + ' 00:00 UTC';
+                document.getElementById('expiryTime').innerText = tomorrow.toISOString().split('T')[0] + ' 00:30 UTC';
 
                 document.getElementById('result').classList.add('show');
                 document.getElementById('loading').classList.remove('show');
