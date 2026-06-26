@@ -14,119 +14,184 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0f0f1a;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(40, 167, 69, 0.08) 0%, transparent 50%);
+            animation: bgShift 8s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes bgShift {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(2%, 2%) rotate(2deg);
+            }
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 35px;
+            max-width: 480px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
+        .logo {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .logo-icon {
+            font-size: 52px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
         h1 {
-            color: #667eea;
             text-align: center;
-            margin-bottom: 10px;
-            font-size: 28px;
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
         }
 
         .subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .device-info {
-            background: #f0f8ff;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .device-info label {
-            color: #667eea;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .device-info .value {
-            font-family: 'Courier New', monospace;
+            color: rgba(255, 255, 255, 0.45);
             font-size: 13px;
-            color: #333;
-            word-break: break-all;
-            background: white;
-            padding: 10px;
-            border-radius: 5px;
+            margin-bottom: 32px;
+            letter-spacing: 0.5px;
         }
 
-        .btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 15px;
+        /* Steps */
+        .steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            gap: 0;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .step-dot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .step-dot .num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.4s;
+        }
+
+        .step-dot .lbl {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            transition: all 0.4s;
+            white-space: nowrap;
+        }
+
+        .step-dot.active .num {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
             color: white;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 0 16px rgba(102, 126, 234, 0.6);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        .step-dot.active .lbl {
+            color: #667eea;
+            font-weight: 600;
         }
 
-        .btn-success {
+        .step-dot.done .num {
             background: #28a745;
+            border-color: transparent;
             color: white;
         }
 
-        .btn-success:hover {
-            background: #218838;
+        .step-dot.done .lbl {
+            color: #28a745;
         }
 
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 8px;
+            margin-bottom: 18px;
+            transition: background 0.4s;
+            max-width: 60px;
         }
 
-        .result {
-            background: #f0f8ff;
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+        .step-line.done {
+            background: #28a745;
+        }
+
+        /* Panels */
+        .panel {
             display: none;
+            animation: fadeSlide 0.4s ease;
         }
 
-        .result.show {
+        .panel.active {
             display: block;
-            animation: slideDown 0.3s ease-out;
         }
 
-        @keyframes slideDown {
+        @keyframes fadeSlide {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(12px);
             }
 
             to {
@@ -135,448 +200,649 @@
             }
         }
 
-        .key-display {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            font-weight: bold;
-            word-break: break-all;
-            color: #28a745;
-            border: 2px dashed #28a745;
-            margin: 15px 0;
-            text-align: center;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            color: #856404;
-        }
-
-        .alert-danger {
-            background: #f8d7da;
-            border: 1px solid #dc3545;
-            color: #721c24;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            border: 1px solid #17a2b8;
-            color: #0c5460;
-        }
-
-        .loading {
-            text-align: center;
-            color: #667eea;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .loading.show {
+        /* Input section */
+        .input-label {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .input-wrap {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .udid-input {
+            width: 100%;
+            padding: 16px 50px 16px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .udid-input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            font-family: inherit;
+        }
+
+        .udid-input:focus {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.08);
+        }
+
+        .udid-input.valid {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.08);
+        }
+
+        .udid-input.invalid {
+            border-color: #dc3545;
+            background: rgba(220, 53, 69, 0.08);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .paste-btn {
+            width: 100%;
+            padding: 11px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .paste-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .validation-msg {
+            font-size: 12px;
+            margin-bottom: 16px;
+            min-height: 18px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .validation-msg.ok {
+            color: #28a745;
+        }
+
+        .validation-msg.err {
+            color: #dc3545;
+        }
+
+        .validation-msg.hint {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Info box */
+        .info-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.8;
+        }
+
+        .info-box strong {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:disabled {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.25);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.35);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(40, 167, 69, 0.5);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            padding: 11px;
+            margin-top: 10px;
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Loading */
+        .loading-wrap {
+            text-align: center;
+            padding: 20px 0;
         }
 
         .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            width: 52px;
+            height: 52px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 18px;
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
+            to {
                 transform: rotate(360deg);
             }
         }
 
-        .footer {
-            text-align: center;
-            color: #999;
+        .loading-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .loading-sub {
+            color: rgba(255, 255, 255, 0.3);
             font-size: 12px;
-            margin-top: 30px;
+            margin-top: 6px;
         }
 
-        .success-icon {
-            font-size: 48px;
+        /* Result */
+        .result-icon {
+            font-size: 56px;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-
-        .step {
-            flex: 1;
+        .result-title {
             text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-            background: #f8f9fa;
-            margin: 0 5px;
-            font-size: 12px;
-            color: #999;
-        }
-
-        .step.active {
-            background: #667eea;
-            color: white;
-            font-weight: bold;
-        }
-
-        .step.completed {
-            background: #28a745;
-            color: white;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #28a745;
             margin-bottom: 20px;
         }
 
-        .info-item {
-            background: #f0f8ff;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #667eea;
+        .key-card {
+            background: rgba(40, 167, 69, 0.1);
+            border: 2px dashed rgba(40, 167, 69, 0.5);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
         }
 
-        .info-item label {
+        .key-card:hover {
+            background: rgba(40, 167, 69, 0.18);
+            border-color: #28a745;
+        }
+
+        .key-card .key-label {
             font-size: 11px;
-            color: #667eea;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
         }
 
-        .info-item .val {
+        .key-value {
             font-family: 'Courier New', monospace;
+            font-size: 19px;
+            font-weight: 700;
+            color: #4ade80;
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+
+        .key-card .tap-hint {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+            margin-top: 10px;
+        }
+
+        .copy-flash {
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: rgba(40, 167, 69, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .copy-flash.show {
+            opacity: 1;
+        }
+
+        /* UDID display in result */
+        .udid-tag {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            word-break: break-all;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Expiry note */
+        .expiry-note {
+            background: rgba(255, 193, 7, 0.08);
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .expiry-note strong {
+            color: #ffc107;
+        }
+
+        /* Error */
+        .error-box {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 10px;
+            padding: 14px;
+            color: #f87171;
             font-size: 13px;
-            color: #333;
-            font-weight: bold;
+            margin-top: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .error-box.show {
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 11px;
+            margin-top: 28px;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .container {
+                padding: 28px 20px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .key-value {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>🔑 TipTip Auto Key</h1>
+
+        <!-- Header -->
+        <div class="logo"><span class="logo-icon">🔑</span></div>
+        <h1>TipTip Auto Key</h1>
         <p class="subtitle">Get your free daily key instantly</p>
 
-        <!-- Step indicator -->
-        <div class="step-indicator">
-            <div class="step active" id="step1">①<br>Verify</div>
-            <div class="step" id="step2">②<br>Generate</div>
-            <div class="step" id="step3">③<br>Complete</div>
+        <!-- Steps -->
+        <div class="steps">
+            <div class="step-dot active" id="sd1">
+                <div class="num">1</div>
+                <div class="lbl">Enter UDID</div>
+            </div>
+            <div class="step-line" id="sl1"></div>
+            <div class="step-dot" id="sd2">
+                <div class="num">2</div>
+                <div class="lbl">Generate</div>
+            </div>
+            <div class="step-line" id="sl2"></div>
+            <div class="step-dot" id="sd3">
+                <div class="num">3</div>
+                <div class="lbl">Done</div>
+            </div>
         </div>
 
-        <!-- Info Grid -->
-        <div class="info-grid">
-            <div class="info-item" style="grid-column: span 2;">
-                <label>📱 Your Device UDID:</label>
-                <div class="val" id="udidDisplay" style="font-size: 10px;">Loading...</div>
-            </div>
-            <div class="info-item" style="grid-column: span 2;">
-                <label>📅 Valid Until:</label>
-                <div class="val" id="expiryDisplay">Loading...</div>
-            </div>
-        </div>
+        <!-- PANEL 1: Enter UDID -->
+        <div class="panel active" id="panelInput">
 
-        <!-- Manual UDID Input (shown when no UDID in URL) -->
-        <div id="manualInput" style="display:none;">
-            <div class="alert alert-warning">
-                ⚠️ <strong>UDID Not Detected</strong><br>
-                Please enter your device UDID manually below:
+            <label class="input-label">📱 Your Device UDID</label>
+            <div class="input-wrap">
+                <input type="text" id="udidInput" class="udid-input" placeholder="Paste or type your UDID here..."
+                    autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                    oninput="onUdidInput()" />
+                <span class="input-icon" id="inputIcon">📋</span>
             </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; color: #667eea; font-weight: bold; margin-bottom: 8px;">
-                    Enter UDID/UUID:
-                </label>
-                <input type="text" id="manualUdid" placeholder="00008030-001234567890ABCD or A1B2C3D4..."
-                    style="width: 100%; padding: 12px; border: 2px solid #667eea; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 14px;"
-                    oninput="validateManualUdid()" />
-                <small style="color: #666; display: block; margin-top: 5px;">
-                    💡 <strong>How to find your UDID:</strong><br>
-                    • Open game mod → Copy UDID 
-                </small>
-            </div>
-            <button class="btn btn-primary" id="confirmUdidBtn" onclick="confirmManualUdid()" disabled>
-                ✅ Confirm UDID
+
+            <button class="paste-btn" onclick="pasteFromClipboard()">
+                📋 Paste from Clipboard
             </button>
+
+            <div class="validation-msg hint" id="validMsg">
+                <span>💡 UUID (36 chars) </span>
+            </div>
+
+            <div class="info-box">
+                <strong>📖 How to get your UDID:</strong><br><br>
+                <span style="color:rgba(255,255,255,0.5);">1.</span> Open <strong>The Spike Cross - Tip Tip</strong>
+                app<br>
+                <span style="color:rgba(255,255,255,0.5);">2.</span> Tap <strong style="color:#f59e0b;">Home</strong>
+                button (bottom left menu)<br>
+                <span style="color:rgba(255,255,255,0.5);">3.</span> Find the <strong
+                    style="color:#60a5fa;">UDID:</strong> line → tap <strong style="color:#e2e8f0;">Copy UDID</strong>
+                button<br>
+                <span style="color:rgba(255,255,255,0.5);">4.</span> Come back here → tap <strong>Paste from
+                    Clipboard</strong> ↑
+                <div
+                    style="margin-top:12px; padding:10px 12px; background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.2); border-radius:8px; font-size:11px; color:rgba(255,255,255,0.4); line-height:1.8;">
+                    💡 Your UDID looks like:<br>
+                    <span
+                        style="font-family:'Courier New',monospace; color:#60a5fa; font-size:11.5px; letter-spacing:0.5px;">65F2C396-C382-40D-BE4E-54E2F4ADF8C8</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="confirmBtn" onclick="confirmUdid()" disabled>
+                ✅ Confirm & Generate Key
+            </button>
+
+            <div class="error-box" id="errorBox"></div>
         </div>
 
-        <div class="alert alert-info">
-            ℹ️ <strong>Important:</strong><br>
-            • Key is generated based on your device UDID<br>
-            • Cannot be shared with other devices<br>
-            • Refreshes daily at 00:30 UTC
+        <!-- PANEL 2: Generating -->
+        <div class="panel" id="panelLoading">
+            <div class="loading-wrap">
+                <div class="spinner"></div>
+                <div class="loading-text">Generating your key...</div>
+                <div class="loading-sub">Please wait a moment</div>
+            </div>
         </div>
 
-        <button class="btn btn-primary" id="generateBtn" onclick="generateKey()" disabled style="display:none;">
-            🎯 Generate Free Key
-        </button>
+        <!-- PANEL 3: Result -->
+        <div class="panel" id="panelResult">
+            <div class="result-icon">🎉</div>
+            <div class="result-title">Key Generated Successfully!</div>
 
-        <div class="loading" id="loading">
-            <div class="spinner"></div>
-            <p><strong>Generating your key...</strong></p>
-            <p style="font-size: 12px; color: #999;">Please wait a moment</p>
-        </div>
+            <div class="key-card" onclick="copyKey()" title="Click to copy">
+                <div class="key-label">Your Daily Key</div>
+                <div class="key-value" id="keyDisplay">—</div>
+                <div class="tap-hint">Tap to copy</div>
+                <div class="copy-flash" id="copyFlash">✅</div>
+            </div>
 
-        <div class="result" id="result">
-            <div class="success-icon">🎉</div>
-            <h3 style="color: #28a745; margin-bottom: 15px; text-align: center;">
-                Key Generated Successfully!
-            </h3>
-            <div class="key-display" id="keyDisplay"></div>
+            <div class="udid-tag" id="udidTag"></div>
+
+            <div class="expiry-note">
+                ⏰ Valid until <strong id="expiryTime">—</strong><br>
+                🔒 This key only works on your device<br>
+                🔄 A new key will be available tomorrow
+            </div>
+
             <button class="btn btn-success" onclick="copyKey()">
-                📋 Copy Key & Return to App
+                📋 Copy Key
             </button>
-            <div class="alert alert-warning">
-                <strong>⚠️ Important Notes:</strong><br>
-                • This key only works on your device<br>
-                • Valid until <span id="expiryTime"></span><br>
-                • Get a new key tomorrow
-            </div>
+            <button class="btn btn-ghost" onclick="resetForm()">
+                ↩ Try Another UDID
+            </button>
         </div>
-
-        <div class="alert alert-danger" id="errorMsg" style="display:none;"></div>
 
         <div class="footer">
-            🎮 TipTip MOD © 2026<br>
-            Keys refresh daily at 00:30 UTC
+            🎮 TipTip MOD © 2026 &nbsp;•&nbsp; Keys refresh daily at 00:30 UTC
         </div>
     </div>
 
     <script>
-        // ===== GET PARAMETERS FROM URL =====
+        // ===== URL Params =====
         const urlParams = new URLSearchParams(window.location.search);
-        const indexCode = urlParams.get('code'); // 9 digits
-        let deviceId = urlParams.get('udid');
-
+        const indexCode = urlParams.get('code'); // 9-digit code
+        let deviceId = urlParams.get('udid');  // optional pre-filled UDID
         let generatedKey = '';
-        let isManualMode = false;
 
-        // ===== VALIDATE PARAMETERS =====
+        // ===== Init =====
         window.addEventListener('load', () => {
-            if (!indexCode) {
-                showError('❌ Invalid link! Missing index code.');
-                return;
+            // Pre-fill if UDID in URL
+            if (deviceId) {
+                document.getElementById('udidInput').value = deviceId;
+                onUdidInput();
             }
 
-            // Validate index code (must be 9 digits)
-            if (!/^\d{9}$/.test(indexCode)) {
-                showError('❌ Invalid index code! Must be 9 digits.');
-                return;
+            // Validate code
+            if (!indexCode || !/^\d{9}$/.test(indexCode)) {
+                showError('❌ Invalid or missing index code in URL.<br>Please use the correct link from the app.');
             }
-
-            if (!deviceId) {
-                // No UDID in URL - show manual input
-                isManualMode = true;
-                document.getElementById('manualInput').style.display = 'block';
-                document.getElementById('udidDisplay').innerText = 'Not detected - please enter manually';
-                document.getElementById('expiryDisplay').innerText = 'Pending...';
-                return;
-            }
-
-            // UDID found in URL - proceed normally
-            setupWithUdid(deviceId);
         });
 
-        function setupWithUdid(udid) {
-            deviceId = udid;
-
-            // Display info
-            document.getElementById('udidDisplay').innerText = deviceId.substring(0, 12) + '...';
-
-            // Calculate expiry (tomorrow 00:30 UTC)
-            const tomorrow = new Date();
-            tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-            tomorrow.setUTCHours(0, 0, 0, 0);
-            const expiryStr = tomorrow.toISOString().split('T')[0] + ' 00:30 UTC';
-            document.getElementById('expiryDisplay').innerText = expiryStr;
-
-            // Enable generate button
-            document.getElementById('generateBtn').disabled = false;
-
-            console.log('UDID:', deviceId);
-            console.log('Index Code:', indexCode);
-
-            // Auto generate key when all info is ready
-            generateKey();
+        // ===== UDID Validation =====
+        function validateUdid(raw) {
+            const v = raw.trim().toUpperCase();
+            if (/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(v)) return { ok: true, clean: v, type: 'UUID (36 chars)' };
+            const stripped = v.replace(/-/g, '');
+            if (/^[0-9A-F]{40}$/.test(stripped)) return { ok: true, clean: v, type: 'UDID (40 chars)' };
+            if (/^[0-9A-F]{32,36}$/.test(stripped)) return { ok: true, clean: v, type: 'UUID (32 chars)' };
+            return { ok: false };
         }
 
-        function validateManualUdid() {
-            const input = document.getElementById('manualUdid');
-            const value = input.value.trim().toUpperCase();
-            const btn = document.getElementById('confirmUdidBtn');
+        function onUdidInput() {
+            const val = document.getElementById('udidInput').value;
+            const inp = document.getElementById('udidInput');
+            const msg = document.getElementById('validMsg');
+            const icon = document.getElementById('inputIcon');
+            const btn = document.getElementById('confirmBtn');
 
-            // Remove dashes for validation
-            const cleanValue = value.replace(/-/g, '');
+            if (!val.trim()) {
+                inp.className = 'udid-input';
+                msg.innerHTML = '<span>💡 UUID (36 chars) or UDID (40 hex chars)</span>';
+                msg.className = 'validation-msg hint';
+                icon.innerText = '📋';
+                btn.disabled = true;
+                return;
+            }
 
-            // Valid if 36 chars (UUID with dashes) or 40 chars (iOS UDID)
-            const isValid = /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(value) ||
-                /^[0-9A-F]{40}$/.test(cleanValue) ||
-                /^[0-9A-F]{36}$/.test(cleanValue);
-
-            btn.disabled = !isValid;
-
-            // Visual feedback
-            if (value.length > 0) {
-                input.style.borderColor = isValid ? '#28a745' : '#dc3545';
+            const res = validateUdid(val);
+            if (res.ok) {
+                inp.className = 'udid-input valid';
+                msg.innerHTML = `✅ Valid ${res.type}`;
+                msg.className = 'validation-msg ok';
+                icon.innerText = '✅';
+                btn.disabled = false;
             } else {
-                input.style.borderColor = '#667eea';
+                inp.className = 'udid-input invalid';
+                const len = val.replace(/-/g, '').length;
+                msg.innerHTML = `❌ Not recognized — ${len} hex chars (need 32–40 or UUID format)`;
+                msg.className = 'validation-msg err';
+                icon.innerText = '❌';
+                btn.disabled = true;
             }
         }
 
-        function confirmManualUdid() {
-            const input = document.getElementById('manualUdid');
-            const udid = input.value.trim().toUpperCase();
-
-            // Hide manual input
-            document.getElementById('manualInput').style.display = 'none';
-
-            // Setup with this UDID
-            setupWithUdid(udid);
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById('udidInput').value = text.trim();
+                    onUdidInput();
+                }
+            } catch (e) {
+                showError('⚠️ Clipboard access denied. Please paste manually using Ctrl+V / long press.');
+            }
         }
 
-        function showError(message) {
-            document.getElementById('errorMsg').innerText = message;
-            document.getElementById('errorMsg').style.display = 'block';
-            document.getElementById('generateBtn').disabled = true;
+        function confirmUdid() {
+            const val = document.getElementById('udidInput').value.trim().toUpperCase();
+            const res = validateUdid(val);
+            if (!res.ok) return;
+            deviceId = val;
+            startGenerate();
         }
 
-        function generateKey() {
-            // Update steps
-            document.getElementById('step1').classList.add('completed');
-            document.getElementById('step1').classList.remove('active');
-            document.getElementById('step2').classList.add('active');
+        // ===== Generation =====
+        function startGenerate() {
+            // Step 1 → done, Step 2 → active
+            setStep(1, 'done');
+            setStep(2, 'active');
+            document.getElementById('sl1').classList.add('done');
+            showPanel('panelLoading');
 
-            // Hide error
-            document.getElementById('errorMsg').style.display = 'none';
-
-            // Show loading
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('result').classList.remove('show');
-            document.getElementById('generateBtn').disabled = true;
-
-            // Simulate processing delay (can add ads countdown here)
             setTimeout(() => {
-                // Generate key
+                if (!indexCode || !/^\d{9}$/.test(indexCode)) {
+                    showPanel('panelInput');
+                    showError('❌ Invalid index code. Please use the correct link.');
+                    return;
+                }
+
                 generatedKey = generateKeyFromUDID(deviceId, indexCode);
 
-                // Update steps
-                document.getElementById('step2').classList.add('completed');
-                document.getElementById('step2').classList.remove('active');
-                document.getElementById('step3').classList.add('active');
-                document.getElementById('step3').classList.add('completed');
-
-                // Show result
-                document.getElementById('keyDisplay').innerText = generatedKey;
-
-                // Set expiry time in result
+                // Expiry: tomorrow 00:30 UTC
                 const tomorrow = new Date();
                 tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
-                tomorrow.setUTCHours(0, 0, 0, 0);
-                document.getElementById('expiryTime').innerText = tomorrow.toISOString().split('T')[0] + ' 00:30 UTC';
+                tomorrow.setUTCHours(0, 30, 0, 0);
+                const expiryStr = tomorrow.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) + ' 00:30 UTC';
 
-                document.getElementById('result').classList.add('show');
-                document.getElementById('loading').classList.remove('show');
-            }, 2000); // 2 seconds simulation (or wait for ads)
+                document.getElementById('keyDisplay').innerText = generatedKey;
+                document.getElementById('expiryTime').innerText = expiryStr;
+                document.getElementById('udidTag').innerText = '📱 UDID: ' + deviceId;
+
+                setStep(2, 'done');
+                setStep(3, 'done');
+                document.getElementById('sl2').classList.add('done');
+
+                showPanel('panelResult');
+            }, 1800);
         }
 
-        function generateKeyFromUDID(udid, indexCode) {
-            // Clean UDID: remove dashes, uppercase
-            let cleanUDID = udid.replace(/-/g, '').toUpperCase();
-
-            // Pad if too short
-            while (cleanUDID.length < 36) {
-                cleanUDID += cleanUDID;
+        function generateKeyFromUDID(udid, code) {
+            let clean = udid.replace(/-/g, '').toUpperCase();
+            while (clean.length < 40) clean += clean;
+            let part = '';
+            for (let i = 0; i < code.length; i++) {
+                const d = parseInt(code[i]);
+                if (isNaN(d)) continue;
+                part += clean[d % clean.length];
             }
-
-            // Generate key part from index code (9 digits)
-            let keyPart = '';
-            for (let i = 0; i < indexCode.length; i++) {
-                let digit = parseInt(indexCode[i]);
-                if (isNaN(digit)) continue;
-
-                // Wrap around if index exceeds length
-                let index = digit % cleanUDID.length;
-                keyPart += cleanUDID[index];
-            }
-
-            // Get today's date (UTC)
-            const today = new Date();
-            const year = today.getUTCFullYear();
-            const month = String(today.getUTCMonth() + 1).padStart(2, '0');
-            const day = String(today.getUTCDate()).padStart(2, '0');
-            const dateStr = `${year}${month}${day}`;
-
-            return `TipTip-${dateStr}-${keyPart}`;
+            const now = new Date();
+            const y = now.getUTCFullYear();
+            const m = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const d = String(now.getUTCDate()).padStart(2, '0');
+            return `TipTip-${y}${m}${d}-${part}`;
         }
 
+        // ===== Copy =====
         function copyKey() {
-            const keyText = document.getElementById('keyDisplay').innerText;
-
-            // Copy to clipboard
+            const text = document.getElementById('keyDisplay').innerText;
+            const flash = document.getElementById('copyFlash');
             if (navigator.clipboard) {
-                navigator.clipboard.writeText(keyText).then(() => {
-                    showCopySuccess();
-                }).catch(() => {
-                    fallbackCopy(keyText);
-                });
-            } else {
-                fallbackCopy(keyText);
-            }
+                navigator.clipboard.writeText(text).then(() => flashCopy(flash)).catch(() => fbCopy(text, flash));
+            } else { fbCopy(text, flash); }
         }
-
-        function fallbackCopy(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            textarea.style.position = 'fixed';
-            textarea.style.opacity = '0';
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            showCopySuccess();
+        function fbCopy(text, flash) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+            document.body.removeChild(ta); flashCopy(flash);
         }
-
-        function showCopySuccess() {
-            const btn = document.querySelector('.btn-success');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '✅ Copied! Return to App';
-            btn.style.background = '#28a745';
-
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-            }, 2000);
-
-            // Optional: Show alert on mobile
+        function flashCopy(flash) {
+            flash.classList.add('show');
+            setTimeout(() => flash.classList.remove('show'), 800);
             if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                setTimeout(() => {
-                    alert('✅ Key copied!\n\nPlease return to TipTip app and paste the key into the input field, then tap "Confirm".');
-                }, 500);
+                setTimeout(() => alert('✅ Key copied!\n\nReturn to TipTip app and paste the key.'), 600);
             }
+        }
+
+        // ===== Utils =====
+        function showPanel(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        function setStep(n, state) {
+            const el = document.getElementById('sd' + n);
+            el.className = 'step-dot ' + state;
+        }
+        function showError(msg) {
+            const box = document.getElementById('errorBox');
+            box.innerHTML = msg;
+            box.classList.add('show');
+            showPanel('panelInput');
+        }
+        function resetForm() {
+            document.getElementById('udidInput').value = '';
+            onUdidInput();
+            setStep(1, 'active'); setStep(2, ''); setStep(3, '');
+            document.getElementById('sl1').classList.remove('done');
+            document.getElementById('sl2').classList.remove('done');
+            document.getElementById('errorBox').classList.remove('show');
+            showPanel('panelInput');
         }
     </script>
 </body>
