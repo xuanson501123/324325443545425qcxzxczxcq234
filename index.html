@@ -442,6 +442,163 @@
             transform: translateY(0);
         }
 
+        /* Locked state */
+        .btn-dl.locked {
+            background: rgba(255, 255, 255, .07);
+            color: rgba(255, 255, 255, .3);
+            box-shadow: none;
+            cursor: not-allowed;
+            pointer-events: none;
+            border: 1px dashed rgba(255, 255, 255, .15);
+        }
+
+        /* Unlock button */
+        .btn-unlock {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-size: .95rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 6px 24px rgba(245, 158, 11, .35);
+            transition: all .25s;
+            letter-spacing: .3px;
+            margin-bottom: 10px;
+        }
+
+        .btn-unlock:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(245, 158, 11, .5);
+        }
+
+        .btn-unlock.done {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 6px 24px rgba(34, 197, 94, .3);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .unlock-hint {
+            font-size: .72rem;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* ── Step buttons ── */
+        .btn-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-size: .95rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all .25s;
+            letter-spacing: .3px;
+            margin-bottom: 10px;
+        }
+
+        .active-step {
+            background: linear-gradient(135deg, #0088cc, #0066aa);
+            color: #fff;
+            box-shadow: 0 6px 24px rgba(0, 136, 204, .35);
+        }
+
+        .active-step:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(0, 136, 204, .5);
+        }
+
+        .locked-step {
+            background: rgba(255, 255, 255, .06) !important;
+            color: rgba(255, 255, 255, .25) !important;
+            border: 1px dashed rgba(255, 255, 255, .15) !important;
+            box-shadow: none !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+        }
+
+        .done-step {
+            background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, .25) !important;
+            cursor: default !important;
+            pointer-events: none !important;
+            transform: none !important;
+        }
+
+        /* ── Social row ── */
+        .social-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-social {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 11px 8px;
+            border-radius: 12px;
+            font-size: .82rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all .2s;
+            border: 1px solid transparent;
+        }
+
+        .btn-tg {
+            background: rgba(0, 136, 204, .18);
+            border-color: rgba(0, 136, 204, .35);
+            color: #60c8f5;
+        }
+
+        .btn-tg:hover {
+            background: rgba(0, 136, 204, .3);
+            transform: translateY(-2px);
+        }
+
+        .btn-tg-spike {
+            background: rgba(245, 200, 66, .15);
+            border-color: rgba(245, 200, 66, .3);
+            color: #f5c842;
+        }
+
+        .btn-tg-spike:hover {
+            background: rgba(245, 200, 66, .28);
+            transform: translateY(-2px);
+        }
+
+        .btn-discord {
+            background: rgba(88, 101, 242, .18);
+            border-color: rgba(88, 101, 242, .35);
+            color: #8b9ef7;
+        }
+
+        .btn-discord:hover {
+            background: rgba(88, 101, 242, .3);
+            transform: translateY(-2px);
+        }
+
         .btn-dl .arrow {
             width: 20px;
             height: 20px;
@@ -629,125 +786,152 @@
 
             <div class="divider"></div>
 
-            <!-- VIP 1 -->
-            <div class="feat-section">
-                <div class="feat-title">
-                    <span>👤 Vip 1</span>
-                    <span class="badge badge-free">🆓 FREE</span>
-                </div>
-                <div class="feat-grid">
-                    <div class="feat-item"><span class="feat-icon">✅</span>Unlock All Characters &amp; Skins</div>
-                    <div class="feat-item"><span class="feat-icon">🔥</span>Custom Character Stat Buffs</div>
-                    <div class="feat-item"><span class="feat-icon">✨</span>Ball Skin Mod</div>
-                    <div class="feat-item"><span class="feat-icon">✨</span>Map Mod</div>
-                    <div class="feat-item"><span class="feat-icon">✅</span>Unlimited Effects</div>
-                    <div class="feat-item"><span class="feat-icon">✅</span>Unlock AI Skills</div>
-                    <div class="feat-item"><span class="feat-icon">✅</span>High Camera View</div>
-                    <div class="feat-item"><span class="feat-icon">✅</span>No Cooldown V2</div>
-                </div>
-            </div>
 
-            <!-- VIP 2 -->
-            <div class="feat-section" style="margin-bottom:0">
-                <div class="feat-title">
-                    <span>👑 Vip 2</span>
-                    <span class="badge badge-vip2">PREMIUM</span>
-                </div>
-                <div class="feat-grid">
-                    <div class="feat-item"><span class="feat-icon">✅</span>Includes all VIP 1 features</div>
-                    <div class="feat-item"><span class="feat-icon">💎</span>My+, En+, Ball+ enhanced stats</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- ── DOWNLOAD ── -->
-        <div class="dl-card">
-            <div class="dl-header">
-                <div class="dl-icon">📦</div>
-                <div class="dl-info">
-                    <div class="dl-name">TSC•TipTip 🐧🐧🐧.ipa</div>
-                    <div class="dl-version">
-                        Latest &nbsp;
-                        <span id="dlVersionChip">…</span>
+            <!-- ── DOWNLOAD ── -->
+            <div class="dl-card">
+                <div class="dl-header">
+                    <div class="dl-icon">📦</div>
+                    <div class="dl-info">
+                        <div class="dl-name">TSC•TipTip 🐧🐧🐧.ipa</div>
+                        <div class="dl-version">
+                            Latest &nbsp;
+                            <span id="dlVersionChip">…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social buttons - press in order -->
+                <button id="btn1" class="btn-step active-step" onclick="handleStep(1)">
+                    ✈️  Telegram 
+                </button>
+                <button id="btn2" class="btn-step locked-step" onclick="handleStep(2)" disabled>
+                    🏐  Telegram The Spike
+                </button>
+                <button id="btn3" class="btn-step locked-step" onclick="handleStep(3)" disabled>
+                    🎮  Discord
+                </button>
+
+                <button id="btnUnlock" class="btn-unlock" onclick="handleUnlock()" disabled
+                    style="opacity:.35;cursor:not-allowed;">
+                    🔓 Confirm
+                </button>
+                <p class="unlock-hint" id="unlockHint">👆 Press each button in order to unlock</p>
+
+                <a id="btnDownload" href="#" class="btn-dl locked" onclick="handleDownload(event)">
+                    🔒 Download IPA <span class="arrow">↓</span>
+                </a>
+
+                <div class="dl-meta">
+                    <div class="meta-pill">
+                        <div class="mp-dot" style="background:#22c55e"></div>iOS Only
+                    </div>
+                    <div class="meta-pill">
+                        <div class="mp-dot" style="background:#f5c842"></div>Free 
+                    </div>
+                    <div class="meta-pill">
+                        <div class="mp-dot" style="background:#a78bfa"></div>TipTip
                     </div>
                 </div>
             </div>
 
-            <a id="btnDownload" href="#" class="btn-dl" onclick="handleDownload(event)">
-                 Download IPA
-                <span class="arrow">↓</span>
+            <!-- ── ADMIN ── -->
+            <a href="https://t.me/tiptipiosmod" class="admin-card" target="_blank" rel="noopener">
+                <div class="admin-avatar">✈️</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin TipTip</div>
+                    <div class="admin-handle">@tiptipiosmod · Telegram</div>
+                </div>
+                <span class="admin-arrow">›</span>
             </a>
 
-            <a href="https://youtu.be/VKrEDeNYLzo" class="btn-guide" target="_blank" rel="noopener">
-                product user manual
-            </a>
-
-            <div class="dl-meta">
-                <div class="meta-pill">
-                    <div class="mp-dot" style="background:#22c55e"></div>iOS Only
-                </div>
-                <div class="meta-pill">
-                    <div class="mp-dot" style="background:#f5c842"></div>The Spike Cross
-                </div>
-                <div class="meta-pill">
-                    <div class="mp-dot" style="background:#a78bfa"></div>TipTip
-                </div>
+            <div class="footer">
+                T.me/gamemodios &nbsp;·&nbsp; TipTip  © 2026<br>
             </div>
+
         </div>
 
-        <!-- ── ADMIN ── -->
-        <a href="https://t.me/tiptipiosmod" class="admin-card" target="_blank" rel="noopener">
-            <div class="admin-avatar">✈️</div>
-            <div class="admin-info">
-                <div class="admin-name">Admin TipTip</div>
-                <div class="admin-handle">@tiptipiosmod · Telegram</div>
-            </div>
-            <span class="admin-arrow">›</span>
-        </a>
+        <script>
+            const AD_URL = 'https://s.shopee.vn/7VELJqmITK';
+            const STEPS = [
+                { url: 'https://t.me/gamemodios', label: '✈️  Telegram ' },
+                { url: 'https://t.me/modspike', label: '🏐 Telegram The Spike' },
+                { url: 'https://discord.gg/p7P4KqhPZg', label: '🎮  Discord' },
+            ];
 
-        <div class="footer">
-            T.me/gamemodios &nbsp;·&nbsp; TipTip MOD © 2026<br>
-            Designed for iOS · The Spike Cross
-        </div>
+            let ipaUrl = '#';
+            let currentStep = 0;
+            let unlocked = false;
 
-    </div>
-
-    <script>
-        const AD_URL = 'https://s.shopee.vn/7VELJqmITK';
-        let ipaUrl = '#';
-
-        // Fetch version & download link from Update.json
-        async function loadUpdate() {
-            try {
-                const res = await fetch('Update.json?t=' + Date.now());
-                if (!res.ok) throw new Error('fetch failed');
-                const data = await res.json();
-
-                const ver = data.version || '—';
-                ipaUrl = data.downloadURL || '#';
-
-                document.getElementById('heroVersion').textContent = '📱Ver ' + ver;
-                document.getElementById('dlVersionChip').textContent = 'v' + ver;
-            } catch (e) {
-                document.getElementById('heroVersion').textContent = '📱 The Spike Cross MOD';
-                document.getElementById('dlVersionChip').textContent = 'N/A';
-            }
-        }
-
-        function handleDownload(e) {
-            e.preventDefault();
-            // Mở tab quảng cáo
-            window.open(AD_URL, '_blank', 'noopener');
-            // Sau 1.5s mở link IPA
-            setTimeout(() => {
-                if (ipaUrl && ipaUrl !== '#') {
-                    window.open(ipaUrl, '_blank', 'noopener');
+            async function loadUpdate() {
+                try {
+                    const res = await fetch('Update.json?t=' + Date.now());
+                    if (!res.ok) throw new Error();
+                    const data = await res.json();
+                    const ver = data.version || '—';
+                    ipaUrl = data.downloadURL || '#';
+                    document.getElementById('heroVersion').textContent = '📱Ver ' + ver;
+                    document.getElementById('dlVersionChip').textContent = 'v' + ver;
+                } catch (e) {
+                    document.getElementById('heroVersion').textContent = '📱 The Spike Cross MOD';
+                    document.getElementById('dlVersionChip').textContent = 'N/A';
                 }
-            }, 1500);
-        }
+            }
 
-        loadUpdate();
-    </script>
+            function handleStep(step) {
+                if (step !== currentStep + 1) return;
+
+                window.open(STEPS[step - 1].url, '_blank', 'noopener');
+
+                const btn = document.getElementById('btn' + step);
+                btn.className = 'btn-step done-step';
+                btn.textContent = '✅ ' + STEPS[step - 1].label.replace(/^\S+\s/, '') + ' — Done!';
+                btn.disabled = true;
+
+                currentStep = step;
+
+                if (step < STEPS.length) {
+                    const next = document.getElementById('btn' + (step + 1));
+                    next.className = 'btn-step active-step';
+                    next.disabled = false;
+                    document.getElementById('unlockHint').textContent = '👆 Next: ' + STEPS[step].label;
+                } else {
+                    const btnUnlock = document.getElementById('btnUnlock');
+                    btnUnlock.disabled = false;
+                    btnUnlock.style.opacity = '1';
+                    btnUnlock.style.cursor = 'pointer';
+                    document.getElementById('unlockHint').textContent = '🔓 Now tap Unlock to get the download link!';
+                }
+            }
+
+            function handleUnlock() {
+                if (currentStep < STEPS.length) return;
+                window.open(AD_URL, '_blank', 'noopener');
+
+                unlocked = true;
+                const btnDl = document.getElementById('btnDownload');
+                const btnUnlock = document.getElementById('btnUnlock');
+
+                btnDl.classList.remove('locked');
+                btnDl.innerHTML = '⬇️ Download IPA <span class="arrow">↓</span>';
+
+                btnUnlock.className = 'btn-unlock done';
+                btnUnlock.textContent = '✅ Unlocked!';
+                btnUnlock.disabled = true;
+
+                document.getElementById('unlockHint').textContent = '✅ Tap Download IPA to get the file';
+            }
+
+            function handleDownload(e) {
+                e.preventDefault();
+                if (!unlocked) return;
+                if (ipaUrl && ipaUrl !== '#') {
+                    window.location.href = ipaUrl;
+                }
+            }
+
+            loadUpdate();
+        </script>
 
 </body>
 
