@@ -673,8 +673,8 @@
                 </div>
             </div>
 
-            <a id="btnDownload" href="#" class="btn-dl" target="_blank" rel="noopener">
-                Download IPA
+            <a id="btnDownload" href="#" class="btn-dl" onclick="handleDownload(event)">
+                 Download IPA
                 <span class="arrow">↓</span>
             </a>
 
@@ -713,6 +713,9 @@
     </div>
 
     <script>
+        const AD_URL = 'https://s.shopee.vn/7VELJqmITK';
+        let ipaUrl = '#';
+
         // Fetch version & download link from Update.json
         async function loadUpdate() {
             try {
@@ -721,15 +724,26 @@
                 const data = await res.json();
 
                 const ver = data.version || '—';
-                const url = data.downloadURL || '#';
+                ipaUrl = data.downloadURL || '#';
 
                 document.getElementById('heroVersion').textContent = '📱Ver ' + ver;
                 document.getElementById('dlVersionChip').textContent = 'v' + ver;
-                document.getElementById('btnDownload').href = url;
             } catch (e) {
                 document.getElementById('heroVersion').textContent = '📱 The Spike Cross MOD';
                 document.getElementById('dlVersionChip').textContent = 'N/A';
             }
+        }
+
+        function handleDownload(e) {
+            e.preventDefault();
+            // Mở tab quảng cáo
+            window.open(AD_URL, '_blank', 'noopener');
+            // Sau 1.5s mở link IPA
+            setTimeout(() => {
+                if (ipaUrl && ipaUrl !== '#') {
+                    window.open(ipaUrl, '_blank', 'noopener');
+                }
+            }, 1500);
         }
 
         loadUpdate();
