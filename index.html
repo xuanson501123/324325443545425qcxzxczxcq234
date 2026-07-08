@@ -803,13 +803,13 @@
 
                 <!-- Social buttons - press in order -->
                 <button id="btn1" class="btn-step active-step" onclick="handleStep(1)">
-                    ✈️  Telegram 
+                    ✈️ Telegram
                 </button>
                 <button id="btn2" class="btn-step locked-step" onclick="handleStep(2)" disabled>
-                    🏐  Telegram The Spike
+                    🏐 Telegram The Spike
                 </button>
                 <button id="btn3" class="btn-step locked-step" onclick="handleStep(3)" disabled>
-                    🎮  Discord
+                    🎮 Discord
                 </button>
 
                 <button id="btnUnlock" class="btn-unlock" onclick="handleUnlock()" disabled
@@ -827,7 +827,7 @@
                         <div class="mp-dot" style="background:#22c55e"></div>iOS Only
                     </div>
                     <div class="meta-pill">
-                        <div class="mp-dot" style="background:#f5c842"></div>Free 
+                        <div class="mp-dot" style="background:#f5c842"></div>Free
                     </div>
                     <div class="meta-pill">
                         <div class="mp-dot" style="background:#a78bfa"></div>TipTip
@@ -846,7 +846,7 @@
             </a>
 
             <div class="footer">
-                T.me/gamemodios &nbsp;·&nbsp; TipTip  © 2026<br>
+                T.me/gamemodios &nbsp;·&nbsp; TipTip © 2026<br>
             </div>
 
         </div>
@@ -926,7 +926,8 @@
                 e.preventDefault();
                 if (!unlocked) return;
                 if (ipaUrl && ipaUrl !== '#') {
-                    window.location.href = ipaUrl;
+                    const shortlinkPrefix = 'https://vuotlink.net/st?api=4e2b672bf2a8ba8ead742b4f9c07db7e690505a2&url=';
+                    window.location.href = shortlinkPrefix + encodeURIComponent(ipaUrl);
                 }
             }
 
