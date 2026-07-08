@@ -788,19 +788,22 @@
         }
 
         function generateKeyFromUDID(udid, code) {
-            let clean = udid.replace(/-/g, '').toUpperCase();
-            while (clean.length < 40) clean += clean;
-            let part = '';
+            // Lấy 10 ký tự cuối UDID (bỏ dấu gạch ngang)
+            const clean = udid.replace(/-/g, '').toUpperCase();
+            const tail = clean.slice(-10); // 10 char cuối, index 0-9
+
+            // Mỗi digit của indexCode là vị trí trong tail
+            let suffix = '';
             for (let i = 0; i < code.length; i++) {
-                const d = parseInt(code[i]);
-                if (isNaN(d)) continue;
-                part += clean[d % clean.length];
+                const pos = parseInt(code[i]); // digit → position 0-9
+                suffix += tail[pos];           // lấy char tại vị trí đó
             }
+
             const now = new Date();
             const y = now.getUTCFullYear();
             const m = String(now.getUTCMonth() + 1).padStart(2, '0');
             const d = String(now.getUTCDate()).padStart(2, '0');
-            return `TipTip-${y}${m}${d}-${part}`;
+            return `TipTip-${y}${m}${d}-${suffix}`;
         }
 
         // ===== Copy =====
