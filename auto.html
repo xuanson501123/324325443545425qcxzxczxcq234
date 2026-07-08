@@ -592,7 +592,7 @@
             </button>
 
             <div class="validation-msg hint" id="validMsg">
-                <span>💡 Format: 00008020-000D2D081A92002E</span>
+                <span>💡 UUID (36 chars) </span>
             </div>
 
             <div class="info-box">
@@ -610,7 +610,7 @@
                     style="margin-top:12px; padding:10px 12px; background:rgba(96,165,250,0.08); border:1px solid rgba(96,165,250,0.2); border-radius:8px; font-size:11px; color:rgba(255,255,255,0.4); line-height:1.8;">
                     💡 Your UDID looks like:<br>
                     <span
-                        style="font-family:'Courier New',monospace; color:#60a5fa; font-size:11.5px; letter-spacing:0.5px;">00008020-000D2D081A92002E</span>
+                        style="font-family:'Courier New',monospace; color:#60a5fa; font-size:11.5px; letter-spacing:0.5px;">65F2C396-C382-40D-BE4E-54E2F4ADF8C8</span>
                 </div>
             </div>
 
@@ -687,15 +687,10 @@
         // ===== UDID Validation =====
         function validateUdid(raw) {
             const v = raw.trim().toUpperCase();
-            // UUID standard: 8-4-4-4-12
             if (/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(v)) return { ok: true, clean: v, type: 'UUID (36 chars)' };
-            // iOS UDID real format: 8-16 (e.g. 00008020-000D2D081A92002E)
-            if (/^[0-9A-F]{8}-[0-9A-F]{16}$/.test(v)) return { ok: true, clean: v, type: 'iOS UDID (25 chars)' };
             const stripped = v.replace(/-/g, '');
-            // UDID 40 hex
             if (/^[0-9A-F]{40}$/.test(stripped)) return { ok: true, clean: v, type: 'UDID (40 chars)' };
-            // Any 16–40 hex chars (covers 24-char stripped iOS UDID etc.)
-            if (/^[0-9A-F]{16,40}$/.test(stripped)) return { ok: true, clean: v, type: 'UDID (' + stripped.length + ' chars)' };
+            if (/^[0-9A-F]{32,36}$/.test(stripped)) return { ok: true, clean: v, type: 'UUID (32 chars)' };
             return { ok: false };
         }
 
@@ -708,7 +703,7 @@
 
             if (!val.trim()) {
                 inp.className = 'udid-input';
-                msg.innerHTML = '<span>💡 Format: 00008020-000D2D081A92002E</span>';
+                msg.innerHTML = '<span>💡 UUID (36 chars) or UDID (40 hex chars)</span>';
                 msg.className = 'validation-msg hint';
                 icon.innerText = '📋';
                 btn.disabled = true;
@@ -788,22 +783,19 @@
         }
 
         function generateKeyFromUDID(udid, code) {
-            // Lấy 10 ký tự cuối UDID (bỏ dấu gạch ngang)
-            const clean = udid.replace(/-/g, '').toUpperCase();
-            const tail = clean.slice(-10); // 10 char cuối, index 0-9
-
-            // Mỗi digit của indexCode là vị trí trong tail
-            let suffix = '';
+            let clean = udid.replace(/-/g, '').toUpperCase();
+            while (clean.length < 40) clean += clean;
+            let part = '';
             for (let i = 0; i < code.length; i++) {
-                const pos = parseInt(code[i]); // digit → position 0-9
-                suffix += tail[pos];           // lấy char tại vị trí đó
+                const d = parseInt(code[i]);
+                if (isNaN(d)) continue;
+                part += clean[d % clean.length];
             }
-
             const now = new Date();
             const y = now.getUTCFullYear();
             const m = String(now.getUTCMonth() + 1).padStart(2, '0');
             const d = String(now.getUTCDate()).padStart(2, '0');
-            return `TipTip-${y}${m}${d}-${suffix}`;
+            return `TipTip-${y}${m}${d}-${part}`;
         }
 
         // ===== Copy =====
