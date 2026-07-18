@@ -1,175 +1,197 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+    <meta name="theme-color" content="#07080d" />
     <title>TipTip MOD – The Spike Cross</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        :root {
+            --bg: #07080d;
+            --text: #d6dbe8;
+            --text-s: #e8ecf6;
+            --hint: #8b93a8;
+            --iris: #7b93e8;
+            --violet: #a67ae0;
+            --rose: #e87a9c;
+            --amber: #e6c15a;
+            --mint: #3fbf96;
+            --cyan: #5bbfd9;
+            --g1: rgba(255, 255, 255, .045);
+            --g2: rgba(255, 255, 255, .08);
+            --gb: rgba(255, 255, 255, .09);
+            --gbh: rgba(255, 255, 255, .16);
+            --shd: 0 4px 14px rgba(0, 0, 0, .3), 0 16px 40px rgba(0, 0, 0, .42);
+            --ref: inset 0 1px 0 rgba(255, 255, 255, .1), inset 0 -1px 1px rgba(0, 0, 0, .15);
+            --r-xl: 24px;
+            --r-lg: 20px;
+            --r-md: 16px;
+            --r-sm: 12px;
+            --ease-s: cubic-bezier(.34, 1.56, .64, 1);
+            --ease-o: cubic-bezier(.2, .9, .2, 1);
+        }
 
         *,
         *::before,
         *::after {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --gold: #f5c842;
-            --gold2: #e8a020;
-            --purple: #7c3aed;
-            --purple2: #5b21b6;
-            --green: #22c55e;
-            --blue: #3b82f6;
-            --red: #ef4444;
-            --bg: #080810;
-            --card: rgba(255, 255, 255, 0.04);
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #f1f1f1;
-            --muted: rgba(255, 255, 255, 0.38);
+            -webkit-tap-highlight-color: transparent
         }
 
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: smooth
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0
         }
 
         body {
-            min-height: 100vh;
+            font-family: 'Inter', -apple-system, sans-serif;
             background: var(--bg);
-            font-family: 'Inter', sans-serif;
             color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            letter-spacing: -.01em;
             overflow-x: hidden;
+            padding: max(16px, env(safe-area-inset-top)) 14px max(32px, env(safe-area-inset-bottom));
+            min-height: 100vh;
         }
 
-        /* ── Background ── */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background:
-                radial-gradient(ellipse 70% 55% at 15% 10%, rgba(124, 58, 237, .22) 0%, transparent 55%),
-                radial-gradient(ellipse 55% 45% at 85% 85%, rgba(245, 200, 66, .12) 0%, transparent 55%),
-                radial-gradient(ellipse 45% 40% at 55% 40%, rgba(59, 130, 246, .08) 0%, transparent 50%);
+            z-index: -1;
             pointer-events: none;
-            z-index: 0;
+            background:
+                radial-gradient(900px 600px at 80% -5%, rgba(108, 140, 255, .2), transparent 60%),
+                radial-gradient(700px 500px at -5% 40%, rgba(177, 108, 255, .16), transparent 60%),
+                radial-gradient(600px 500px at 55% 110%, rgba(255, 107, 154, .14), transparent 60%),
+                var(--bg);
         }
 
-        /* ── Orbs ── */
-        .orb {
+        .blob {
             position: fixed;
             border-radius: 50%;
-            filter: blur(90px);
-            opacity: .15;
+            filter: blur(72px);
+            opacity: .5;
+            animation: fl 22s ease-in-out infinite;
+            will-change: transform;
             pointer-events: none;
-            z-index: 0;
-            animation: drift 14s ease-in-out infinite alternate;
+            z-index: -1
         }
 
-        .orb1 {
+        .b1 {
             width: 380px;
             height: 380px;
-            background: #7c3aed;
-            top: -100px;
-            left: -100px;
+            background: var(--iris);
+            top: -80px;
+            left: -80px
         }
 
-        .orb2 {
-            width: 300px;
-            height: 300px;
-            background: #f5c842;
-            bottom: -80px;
-            right: -80px;
-            animation-delay: -5s;
+        .b2 {
+            width: 280px;
+            height: 280px;
+            background: var(--violet);
+            top: 35%;
+            right: -90px;
+            animation-delay: -8s
         }
 
-        .orb3 {
-            width: 220px;
-            height: 220px;
-            background: #22c55e;
-            top: 45%;
-            left: 65%;
-            animation-delay: -9s;
+        .b3 {
+            width: 320px;
+            height: 320px;
+            background: var(--rose);
+            bottom: -100px;
+            left: 30%;
+            animation-delay: -15s
         }
 
-        @keyframes drift {
-            from {
-                transform: translate(0, 0) scale(1);
+        @keyframes fl {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
             }
 
-            to {
-                transform: translate(28px, 18px) scale(1.07);
+            33% {
+                transform: translate(30px, -25px) scale(1.06)
+            }
+
+            66% {
+                transform: translate(-18px, 22px) scale(.96)
             }
         }
 
-        /* ── Layout ── */
         .page {
-            position: relative;
-            z-index: 1;
             max-width: 520px;
             margin: 0 auto;
-            padding: 24px 16px 60px;
+            position: relative;
+            z-index: 1
         }
 
-        /* ── Top pill ── */
+        /* live badge */
         .live-badge {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 28px;
+            gap: 7px;
+            margin-bottom: 22px
         }
 
         .live-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse-dot 2s ease-in-out infinite;
+            background: var(--mint);
+            box-shadow: 0 0 8px var(--mint);
+            animation: pulse 1.6s ease-in-out infinite
         }
 
-        @keyframes pulse-dot {
+        @keyframes pulse {
 
             0%,
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: scale(1)
             }
 
             50% {
-                opacity: .5;
-                transform: scale(1.5);
+                opacity: .35;
+                transform: scale(.85)
             }
         }
 
         .live-badge span {
-            font-size: .72rem;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 1.8px;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            color: var(--muted);
+            color: var(--hint)
         }
 
-        /* ── Hero ── */
+        /* hero card */
         .hero {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 28px;
-            padding: 36px 28px 32px;
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            box-shadow:
-                0 0 0 1px rgba(255, 255, 255, .04),
-                0 28px 72px rgba(0, 0, 0, .55),
-                inset 0 1px 0 rgba(255, 255, 255, .07);
+            background: linear-gradient(145deg, rgba(108, 140, 255, .12), rgba(177, 108, 255, .08) 50%, rgba(255, 107, 154, .07));
+            border: 1px solid var(--gbh);
+            border-radius: var(--r-xl);
+            padding: 28px 22px 24px;
+            backdrop-filter: blur(24px) saturate(1.5);
+            -webkit-backdrop-filter: blur(24px) saturate(1.5);
+            box-shadow: var(--shd), var(--ref);
             position: relative;
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
+            animation: sd .6s var(--ease-o) both;
         }
 
-        /* top shimmer */
         .hero::before {
             content: '';
             position: absolute;
@@ -177,763 +199,618 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--gold), var(--purple), transparent);
-            opacity: .7;
+            background: linear-gradient(90deg, transparent, var(--iris), var(--violet), var(--rose), transparent);
+            opacity: .7
+        }
+
+        @keyframes sd {
+            from {
+                opacity: 0;
+                transform: translateY(-14px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
         }
 
         .game-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(124, 58, 237, .18);
-            border: 1px solid rgba(124, 58, 237, .35);
-            border-radius: 30px;
-            padding: 4px 14px;
-            font-size: .72rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+            padding: 4px 13px;
+            border-radius: 99px;
+            background: rgba(123, 147, 232, .15);
+            border: 1px solid rgba(123, 147, 232, .3);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .06em;
             text-transform: uppercase;
-            color: #a78bfa;
-            margin-bottom: 18px;
+            color: var(--iris);
+            margin-bottom: 16px;
         }
 
         .hero-title {
-            font-size: 1.9rem;
+            font-size: 32px;
             font-weight: 900;
-            line-height: 1.15;
+            line-height: 1.1;
             margin-bottom: 8px;
-        }
-
-        .hero-title span {
-            background: linear-gradient(135deg, #fff 20%, var(--gold));
+            background: linear-gradient(135deg, var(--text-s) 30%, var(--amber));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+            background-clip: text
         }
 
         .version-row {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 22px;
-            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap
         }
 
-        .version-chip {
+        .ver-chip {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(59, 130, 246, .15);
-            border: 1px solid rgba(59, 130, 246, .3);
-            border-radius: 20px;
-            padding: 5px 14px;
-            font-size: .78rem;
+            padding: 5px 12px;
+            border-radius: 99px;
+            background: rgba(91, 191, 217, .14);
+            border: 1px solid rgba(91, 191, 217, .3);
+            font-size: 11px;
             font-weight: 700;
-            color: #93c5fd;
+            color: var(--cyan);
         }
 
-        .version-chip .v-dot {
+        .ver-chip .vdot {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #3b82f6;
+            background: var(--cyan)
         }
 
-        .platform-chip {
+        .plat-chip {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, .06);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 5px 14px;
-            font-size: .78rem;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 99px;
+            background: var(--g1);
+            border: 1px solid var(--gb);
+            font-size: 11px;
             font-weight: 600;
-            color: var(--muted);
+            color: var(--hint);
         }
 
-        /* ── Divider ── */
         .divider {
             height: 1px;
-            background: var(--border);
-            margin: 0 -28px 24px;
+            background: var(--gb);
+            margin: 0 -22px 20px
         }
 
-        /* ── Feature sections ── */
-        .feat-section {
-            margin-bottom: 22px;
-        }
-
+        /* features */
         .feat-title {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: .78rem;
+            gap: 9px;
+            font-size: 10px;
             font-weight: 800;
-            letter-spacing: 1.4px;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            margin-bottom: 14px;
+            color: var(--hint);
+            margin-bottom: 12px;
         }
 
-        .feat-title .badge {
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: .72rem;
+        .badge {
+            padding: 3px 10px;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 800
         }
 
         .badge-free {
-            background: rgba(34, 197, 94, .15);
-            border: 1px solid rgba(34, 197, 94, .3);
-            color: #4ade80;
+            background: rgba(63, 191, 150, .14);
+            border: 1px solid rgba(63, 191, 150, .3);
+            color: var(--mint)
         }
 
         .badge-vip2 {
-            background: rgba(245, 200, 66, .15);
-            border: 1px solid rgba(245, 200, 66, .3);
-            color: var(--gold);
+            background: rgba(230, 193, 90, .14);
+            border: 1px solid rgba(230, 193, 90, .3);
+            color: var(--amber)
         }
 
         .feat-grid {
             display: grid;
-            gap: 8px;
+            gap: 7px;
+            margin-bottom: 18px
         }
 
         .feat-item {
             display: flex;
             align-items: flex-start;
-            gap: 11px;
-            background: rgba(255, 255, 255, .03);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 11px 14px;
-            font-size: .85rem;
-            color: rgba(255, 255, 255, .8);
+            gap: 10px;
+            background: var(--g1);
+            border: 1px solid var(--gb);
+            border-radius: var(--r-sm);
+            padding: 10px 13px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, .78);
             line-height: 1.4;
             transition: border-color .2s, background .2s;
         }
 
         .feat-item:hover {
-            border-color: rgba(255, 255, 255, .15);
-            background: rgba(255, 255, 255, .055);
+            border-color: var(--gbh);
+            background: var(--g2)
         }
 
-        .feat-icon {
-            font-size: 1rem;
+        .feat-ico {
+            font-size: 15px;
             flex-shrink: 0;
-            margin-top: 1px;
+            margin-top: 1px
         }
 
-        /* ── Warning box ── */
+        /* warn box */
         .warn-box {
-            background: rgba(239, 68, 68, .08);
-            border: 1px solid rgba(239, 68, 68, .25);
-            border-radius: 14px;
-            padding: 16px 18px;
-            margin-bottom: 22px;
+            background: rgba(232, 90, 120, .07);
+            border: 1px solid rgba(232, 90, 120, .22);
+            border-radius: var(--r-md);
+            padding: 14px 16px;
+            margin-bottom: 18px;
             display: flex;
-            gap: 12px;
+            gap: 11px;
             align-items: flex-start;
         }
 
         .warn-icon {
-            font-size: 1.2rem;
+            font-size: 18px;
             flex-shrink: 0;
-            margin-top: 1px;
+            margin-top: 1px
         }
 
         .warn-text {
-            font-size: .82rem;
-            color: rgba(255, 255, 255, .65);
-            line-height: 1.7;
+            font-size: 12.5px;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.7
         }
 
         .warn-text strong {
-            color: #fca5a5;
+            color: #fca5a5
         }
+    </style>
+</head>
 
-        /* ── Download card ── */
+<body>
+    <span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+
+    <div class="page">
+
+        <div class="live-badge">
+            <div class="live-dot"></div>
+            <span>Tip Tip · iOS</span>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero">
+            <div class="game-tag">🎮 The Spike Cross</div>
+            <h1 class="hero-title">Tip Tip</h1>
+
+            <div class="version-row">
+                <div class="ver-chip">
+                    <div class="vdot"></div><span id="heroVersion">Loading…</span>
+                </div>
+                <div class="plat-chip">📱 iOS / iPadOS</div>
+            </div>
+
+            <div class="divider"></div>
+            <!-- DOWNLOAD CARD -->
+            <div id="dlCard"></div>
+
+            <!-- ADMIN -->
+            <a href="https://t.me/tiptipiosmod" target="_blank" rel="noopener" id="adminCard"></a>
+
+            <div
+                style="text-align:center;margin-top:20px;font-size:11px;color:var(--hint);opacity:.5;letter-spacing:.03em">
+                T.me/gamemodios &nbsp;·&nbsp; TipTip © 2026
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        /* download card */
         .dl-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px 24px 20px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, .4);
-            margin-bottom: 16px;
+            background: var(--g1);
+            border: 1px solid var(--gb);
+            border-radius: var(--r-lg);
+            padding: 20px 18px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--ref);
+            margin-bottom: 14px;
         }
 
         .dl-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 16px
         }
 
         .dl-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #7c3aed22, #f5c84222);
-            border: 1px solid rgba(124, 58, 237, .3);
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(123, 147, 232, .25), rgba(166, 122, 224, .18));
+            border: 1px solid rgba(123, 147, 232, .25);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-
-        .dl-info {
-            flex: 1;
+            font-size: 22px;
+            box-shadow: 0 5px 16px rgba(0, 0, 0, .3);
         }
 
         .dl-name {
-            font-size: 1rem;
+            font-size: 14px;
             font-weight: 800;
-            color: #fff;
-            margin-bottom: 2px;
+            color: var(--text-s);
+            margin-bottom: 3px
         }
 
-        .dl-version {
-            font-size: .75rem;
-            font-weight: 600;
-            color: var(--muted);
+        .dl-ver {
+            font-size: 11px;
+            color: var(--hint);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 6px
         }
 
-        .dl-version span {
-            background: rgba(59, 130, 246, .15);
-            color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, .25);
-            border-radius: 20px;
-            padding: 2px 9px;
-            font-size: .7rem;
+        .dl-ver span {
+            background: rgba(91, 191, 217, .14);
+            color: var(--cyan);
+            border: 1px solid rgba(91, 191, 217, .25);
+            border-radius: 99px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 700;
         }
 
-        .btn-dl {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--purple), var(--purple2));
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 6px 24px rgba(124, 58, 237, .35);
-            transition: all .25s;
-            letter-spacing: .3px;
-            margin-bottom: 12px;
-        }
-
-        .btn-dl:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(124, 58, 237, .5);
-        }
-
-        .btn-dl:active {
-            transform: translateY(0);
-        }
-
-        /* Locked state */
-        .btn-dl.locked {
-            background: rgba(255, 255, 255, .07);
-            color: rgba(255, 255, 255, .3);
-            box-shadow: none;
-            cursor: not-allowed;
-            pointer-events: none;
-            border: 1px dashed rgba(255, 255, 255, .15);
-        }
-
-        /* Unlock button */
-        .btn-unlock {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #fff;
-            font-size: .95rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 6px 24px rgba(245, 158, 11, .35);
-            transition: all .25s;
-            letter-spacing: .3px;
-            margin-bottom: 10px;
-        }
-
-        .btn-unlock:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(245, 158, 11, .5);
-        }
-
-        .btn-unlock.done {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            box-shadow: 0 6px 24px rgba(34, 197, 94, .3);
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .unlock-hint {
-            font-size: .72rem;
-            color: var(--muted);
-            text-align: center;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        /* ── Step buttons ── */
         .btn-step {
+            width: 100%;
+            padding: 13px 16px;
+            border: 0;
+            border-radius: var(--r-md);
+            margin-bottom: 9px;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 14px;
-            font-size: .95rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all .25s;
-            letter-spacing: .3px;
-            margin-bottom: 10px;
+            gap: 8px;
+            transition: transform .2s var(--ease-s), opacity .15s;
+            letter-spacing: -.01em;
+        }
+
+        .btn-step:active {
+            transform: scale(.97)
         }
 
         .active-step {
-            background: linear-gradient(135deg, #0088cc, #0066aa);
+            background: linear-gradient(135deg, #0088cc, #0055aa);
             color: #fff;
-            box-shadow: 0 6px 24px rgba(0, 136, 204, .35);
-        }
-
-        .active-step:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 28px rgba(0, 136, 204, .5);
+            box-shadow: 0 5px 18px rgba(0, 136, 204, .35)
         }
 
         .locked-step {
-            background: rgba(255, 255, 255, .06) !important;
-            color: rgba(255, 255, 255, .25) !important;
-            border: 1px dashed rgba(255, 255, 255, .15) !important;
-            box-shadow: none !important;
-            cursor: not-allowed !important;
-            transform: none !important;
+            background: var(--g1);
+            border: 1px dashed var(--gb);
+            color: var(--hint);
+            cursor: not-allowed;
+            opacity: .5
         }
 
         .done-step {
-            background: linear-gradient(135deg, #22c55e, #16a34a) !important;
-            color: #fff !important;
-            box-shadow: 0 4px 16px rgba(34, 197, 94, .25) !important;
-            cursor: default !important;
-            pointer-events: none !important;
-            transform: none !important;
+            background: linear-gradient(135deg, var(--mint), #16a34a);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(63, 191, 150, .3);
+            cursor: default;
+            pointer-events: none
         }
 
-        /* ── Social row ── */
-        .social-row {
+        .btn-unlock {
+            width: 100%;
+            padding: 13px;
+            border: 0;
+            border-radius: var(--r-md);
+            margin-bottom: 8px;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--amber), #c9860a);
+            color: #07080d;
+            box-shadow: 0 5px 18px rgba(230, 193, 90, .35);
+            transition: transform .2s var(--ease-s);
+        }
+
+        .btn-unlock:active {
+            transform: scale(.97)
+        }
+
+        .btn-unlock.done {
+            background: linear-gradient(135deg, var(--mint), #16a34a);
+            color: #fff;
+            pointer-events: none
+        }
+
+        .unlock-hint {
+            text-align: center;
+            font-size: 11.5px;
+            color: var(--hint);
+            margin-bottom: 12px
+        }
+
+        .btn-dl {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: var(--r-md);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--iris), var(--violet));
+            color: #f2f4fa;
+            box-shadow: 0 6px 20px rgba(123, 147, 232, .35);
             display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 8px;
+            text-decoration: none;
+            transition: transform .2s var(--ease-s);
             margin-bottom: 14px;
         }
 
-        .btn-social {
-            flex: 1;
+        .btn-dl:active {
+            transform: scale(.97)
+        }
+
+        .btn-dl.locked {
+            background: var(--g1);
+            border: 1px dashed var(--gb);
+            color: var(--hint);
+            box-shadow: none;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .meta-pills {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 11px 8px;
-            border-radius: 12px;
-            font-size: .82rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all .2s;
-            border: 1px solid transparent;
-        }
-
-        .btn-tg {
-            background: rgba(0, 136, 204, .18);
-            border-color: rgba(0, 136, 204, .35);
-            color: #60c8f5;
-        }
-
-        .btn-tg:hover {
-            background: rgba(0, 136, 204, .3);
-            transform: translateY(-2px);
-        }
-
-        .btn-tg-spike {
-            background: rgba(245, 200, 66, .15);
-            border-color: rgba(245, 200, 66, .3);
-            color: #f5c842;
-        }
-
-        .btn-tg-spike:hover {
-            background: rgba(245, 200, 66, .28);
-            transform: translateY(-2px);
-        }
-
-        .btn-discord {
-            background: rgba(88, 101, 242, .18);
-            border-color: rgba(88, 101, 242, .35);
-            color: #8b9ef7;
-        }
-
-        .btn-discord:hover {
-            background: rgba(88, 101, 242, .3);
-            transform: translateY(-2px);
-        }
-
-        .btn-dl .arrow {
-            width: 20px;
-            height: 20px;
-            background: rgba(255, 255, 255, .2);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: .8rem;
-        }
-
-        .btn-guide {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, .12);
-            color: rgba(255, 255, 255, .55);
-            font-size: .85rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all .2s;
-        }
-
-        .btn-guide:hover {
-            border-color: rgba(255, 255, 255, .28);
-            color: rgba(255, 255, 255, .85);
-            background: rgba(255, 255, 255, .04);
-        }
-
-        .dl-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 14px;
+            gap: 7px;
+            flex-wrap: wrap
         }
 
         .meta-pill {
             display: flex;
             align-items: center;
             gap: 5px;
-            background: rgba(255, 255, 255, .04);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 4px 11px;
-            font-size: .72rem;
-            color: var(--muted);
+            padding: 4px 10px;
+            border-radius: 99px;
+            background: var(--g1);
+            border: 1px solid var(--gb);
+            font-size: 11px;
+            color: var(--hint);
         }
 
-        .meta-pill .mp-dot {
+        .meta-pill .mpdot {
             width: 5px;
             height: 5px;
-            border-radius: 50%;
+            border-radius: 50%
         }
 
-        /* ── Loading state ── */
-        .skeleton {
-            height: 20px;
-            border-radius: 6px;
-            background: linear-gradient(90deg, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, .05) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            margin-bottom: 8px;
+        /* social */
+        .social-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px
         }
 
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        /* ── Admin section ── */
-        .admin-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-decoration: none;
-            transition: border-color .2s, background .2s;
-        }
-
-        .admin-card:hover {
-            border-color: rgba(255, 255, 255, .18);
-            background: rgba(255, 255, 255, .06);
-        }
-
-        .admin-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0088cc, #0066aa);
+        .btn-social {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            gap: 6px;
+            padding: 10px 6px;
+            border-radius: var(--r-sm);
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: transform .2s, background .2s;
+        }
+
+        .btn-social:active {
+            transform: scale(.96)
+        }
+
+        .btn-tg {
+            background: rgba(0, 136, 204, .14);
+            border-color: rgba(0, 136, 204, .3);
+            color: #60c8f5
+        }
+
+        .btn-spike {
+            background: rgba(230, 193, 90, .12);
+            border-color: rgba(230, 193, 90, .28);
+            color: var(--amber)
+        }
+
+        .btn-dc {
+            background: rgba(88, 101, 242, .14);
+            border-color: rgba(88, 101, 242, .3);
+            color: #8b9ef7
+        }
+
+        /* admin card */
+        a#adminCard {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--g1);
+            border: 1px solid var(--gb);
+            border-radius: var(--r-lg);
+            text-decoration: none;
+            transition: border-color .2s, background .2s;
+            box-shadow: var(--ref);
+            margin-bottom: 0;
+        }
+
+        a#adminCard:hover {
+            border-color: var(--gbh);
+            background: var(--g2)
+        }
+
+        .admin-ava {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
             flex-shrink: 0;
+            background: linear-gradient(135deg, #0088cc, #0055aa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 5px 14px rgba(0, 136, 204, .35);
         }
 
         .admin-info {
-            flex: 1;
+            flex: 1
         }
 
         .admin-name {
-            font-size: .9rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 2px;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-s)
         }
 
         .admin-handle {
-            font-size: .75rem;
-            color: var(--muted);
+            font-size: 11.5px;
+            color: var(--hint);
+            margin-top: 2px
         }
 
-        .admin-arrow {
-            color: var(--muted);
-            font-size: 1rem;
-        }
-
-        /* ── Footer ── */
-        .footer {
-            text-align: center;
-            margin-top: 32px;
-            font-size: .7rem;
-            color: rgba(255, 255, 255, .18);
-            letter-spacing: .5px;
-            line-height: 1.8;
-        }
-
-        /* ── Responsive ── */
-        @media(max-width:400px) {
-            .hero {
-                padding: 28px 20px 24px;
-            }
-
-            .hero-title {
-                font-size: 1.6rem;
-            }
-
-            .dl-card {
-                padding: 20px 18px;
-            }
+        .admin-arr {
+            color: var(--hint);
+            font-size: 20px
         }
     </style>
-</head>
 
-<body>
+    <script>
+        const AD_URL = 'https://s.shopee.vn/7VELJqmITK';
+        const STEPS = [
+            { url: 'https://t.me/gamemodios', label: '✈️ Telegram' },
+            { url: 'https://t.me/modspike', label: '🏐 Telegram The Spike' },
+            { url: 'https://discord.gg/p7P4KqhPZg', label: '🎮 Discord' },
+        ];
 
-    <div class="orb orb1"></div>
-    <div class="orb orb2"></div>
-    <div class="orb orb3"></div>
+        let ipaUrl = '#', currentStep = 0, unlocked = false;
 
-    <div class="page">
+        async function loadUpdate() {
+            try {
+                const res = await fetch('Update.json?t=' + Date.now());
+                const data = await res.json();
+                const ver = data.version || '—';
+                ipaUrl = data.downloadURL || '#';
+                document.getElementById('heroVersion').textContent = '📱 Ver ' + ver;
+                document.getElementById('dlVersionChip').textContent = 'v' + ver;
+            } catch {
+                document.getElementById('heroVersion').textContent = '📱 The Spike Cross MOD';
+                document.getElementById('dlVersionChip').textContent = 'N/A';
+            }
+        }
 
-        <!-- Live badge -->
-        <div class="live-badge">
-            <div class="live-dot"></div>
-            <span>Tip Tip · iOS</span>
+        function buildCards() {
+            // Download card
+            document.getElementById('dlCard').innerHTML = `
+    <div class="dl-card">
+      <div class="dl-header">
+        <div class="dl-icon">📦</div>
+        <div>
+          <div class="dl-name">TSC·TipTip 🐧🐧🐧.ipa</div>
+          <div class="dl-ver">Latest &nbsp;<span id="dlVersionChip">…</span></div>
         </div>
+      </div>
+      <button id="btn1" class="btn-step active-step"  onclick="handleStep(1)">${STEPS[0].label}</button>
+      <button id="btn2" class="btn-step locked-step"  onclick="handleStep(2)" disabled>${STEPS[1].label}</button>
+      <button id="btn3" class="btn-step locked-step"  onclick="handleStep(3)" disabled>${STEPS[2].label}</button>
+      <button id="btnUnlock" class="btn-unlock" onclick="handleUnlock()" disabled style="opacity:.38;cursor:not-allowed">🔓 Confirm &amp; Unlock</button>
+      <p class="unlock-hint" id="unlockHint">👆 Nhấn từng nút theo thứ tự để mở khóa</p>
+      <a id="btnDownload" href="#" class="btn-dl locked" onclick="handleDownload(event)">🔒 Download IPA ↓</a>
+      <div class="meta-pills">
+        <div class="meta-pill"><div class="mpdot" style="background:var(--mint)"></div>iOS Only</div>
+        <div class="meta-pill"><div class="mpdot" style="background:var(--amber)"></div>Free</div>
+        <div class="meta-pill"><div class="mpdot" style="background:var(--violet)"></div>TipTip</div>
+      </div>
+    </div>
+  `;
+            // Admin card
+            document.getElementById('adminCard').innerHTML = `
+    <div class="admin-ava">✈️</div>
+    <div class="admin-info">
+      <div class="admin-name">Admin TipTip</div>
+      <div class="admin-handle">@tiptipiosmod · Telegram</div>
+    </div>
+    <span class="admin-arr">›</span>
+  `;
+        }
 
-        <!-- ── HERO ── -->
-        <div class="hero">
-            <div class="game-tag">🎮 The Spike Cross</div>
-            <h1 class="hero-title"><span>Tip Tip</span></h1>
-
-            <div class="version-row">
-                <div class="version-chip">
-                    <div class="v-dot"></div>
-                    <span id="heroVersion">Loading…</span>
-                </div>
-                <div class="platform-chip">📱 iOS / iPadOS</div>
-            </div>
-
-            <div class="divider"></div>
-
-
-
-            <!-- ── DOWNLOAD ── -->
-            <div class="dl-card">
-                <div class="dl-header">
-                    <div class="dl-icon">📦</div>
-                    <div class="dl-info">
-                        <div class="dl-name">TSC•TipTip 🐧🐧🐧.ipa</div>
-                        <div class="dl-version">
-                            Latest &nbsp;
-                            <span id="dlVersionChip">…</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Social buttons - press in order -->
-                <button id="btn1" class="btn-step active-step" onclick="handleStep(1)">
-                    ✈️ Telegram
-                </button>
-                <button id="btn2" class="btn-step locked-step" onclick="handleStep(2)" disabled>
-                    🏐 Telegram The Spike
-                </button>
-                <button id="btn3" class="btn-step locked-step" onclick="handleStep(3)" disabled>
-                    🎮 Discord
-                </button>
-
-                <button id="btnUnlock" class="btn-unlock" onclick="handleUnlock()" disabled
-                    style="opacity:.35;cursor:not-allowed;">
-                    🔓 Confirm
-                </button>
-                <p class="unlock-hint" id="unlockHint">👆 Press each button in order to unlock</p>
-
-                <a id="btnDownload" href="#" class="btn-dl locked" onclick="handleDownload(event)">
-                    🔒 Download IPA <span class="arrow">↓</span>
-                </a>
-
-                <div class="dl-meta">
-                    <div class="meta-pill">
-                        <div class="mp-dot" style="background:#22c55e"></div>iOS Only
-                    </div>
-                    <div class="meta-pill">
-                        <div class="mp-dot" style="background:#f5c842"></div>Free
-                    </div>
-                    <div class="meta-pill">
-                        <div class="mp-dot" style="background:#a78bfa"></div>TipTip
-                    </div>
-                </div>
-            </div>
-
-            <!-- ── ADMIN ── -->
-            <a href="https://t.me/tiptipiosmod" class="admin-card" target="_blank" rel="noopener">
-                <div class="admin-avatar">✈️</div>
-                <div class="admin-info">
-                    <div class="admin-name">Admin TipTip</div>
-                    <div class="admin-handle">@tiptipiosmod · Telegram</div>
-                </div>
-                <span class="admin-arrow">›</span>
-            </a>
-
-            <div class="footer">
-                T.me/gamemodios &nbsp;·&nbsp; TipTip © 2026<br>
-            </div>
-
-        </div>
-
-        <script>
-            const AD_URL = 'https://s.shopee.vn/7VELJqmITK';
-            const STEPS = [
-                { url: 'https://t.me/gamemodios', label: '✈️  Telegram ' },
-                { url: 'https://t.me/modspike', label: '🏐 Telegram The Spike' },
-                { url: 'https://discord.gg/p7P4KqhPZg', label: '🎮  Discord' },
-            ];
-
-            let ipaUrl = '#';
-            let currentStep = 0;
-            let unlocked = false;
-
-            async function loadUpdate() {
-                try {
-                    const res = await fetch('Update.json?t=' + Date.now());
-                    if (!res.ok) throw new Error();
-                    const data = await res.json();
-                    const ver = data.version || '—';
-                    ipaUrl = data.downloadURL || '#';
-                    document.getElementById('heroVersion').textContent = '📱Ver ' + ver;
-                    document.getElementById('dlVersionChip').textContent = 'v' + ver;
-                } catch (e) {
-                    document.getElementById('heroVersion').textContent = '📱 The Spike Cross MOD';
-                    document.getElementById('dlVersionChip').textContent = 'N/A';
-                }
+        function handleStep(step) {
+            if (step !== currentStep + 1) return;
+            window.open(STEPS[step - 1].url, '_blank', 'noopener');
+            const btn = document.getElementById('btn' + step);
+            btn.className = 'btn-step done-step';
+            btn.textContent = '✅ ' + STEPS[step - 1].label.replace(/^\S+\s/, '') + ' — Done!';
+            btn.disabled = true;
+            currentStep = step;
+            if (step < STEPS.length) {
+                const next = document.getElementById('btn' + (step + 1));
+                next.className = 'btn-step active-step'; next.disabled = false;
+                document.getElementById('unlockHint').textContent = '👆 Tiếp theo: ' + STEPS[step].label;
+            } else {
+                const u = document.getElementById('btnUnlock');
+                u.disabled = false; u.style.opacity = '1'; u.style.cursor = 'pointer';
+                document.getElementById('unlockHint').textContent = '🔓 Nhấn Confirm để lấy link tải!';
             }
+        }
 
-            function handleStep(step) {
-                if (step !== currentStep + 1) return;
+        function handleUnlock() {
+            if (currentStep < STEPS.length) return;
+            window.open(AD_URL, '_blank', 'noopener');
+            unlocked = true;
+            const btnDl = document.getElementById('btnDownload');
+            const btnU = document.getElementById('btnUnlock');
+            btnDl.classList.remove('locked');
+            btnDl.textContent = '⬇️ Download IPA ↓';
+            btnU.className = 'btn-unlock done'; btnU.textContent = '✅ Unlocked!'; btnU.disabled = true;
+            document.getElementById('unlockHint').textContent = '✅ Nhấn Download IPA để tải file';
+        }
 
-                window.open(STEPS[step - 1].url, '_blank', 'noopener');
+        function handleDownload(e) {
+            e.preventDefault();
+            if (!unlocked || !ipaUrl || ipaUrl === '#') return;
+            window.location.href = 'https://vuotlink.net/st?api=4e2b672bf2a8ba8ead742b4f9c07db7e690505a2&url=' + encodeURIComponent(ipaUrl);
+        }
 
-                const btn = document.getElementById('btn' + step);
-                btn.className = 'btn-step done-step';
-                btn.textContent = '✅ ' + STEPS[step - 1].label.replace(/^\S+\s/, '') + ' — Done!';
-                btn.disabled = true;
-
-                currentStep = step;
-
-                if (step < STEPS.length) {
-                    const next = document.getElementById('btn' + (step + 1));
-                    next.className = 'btn-step active-step';
-                    next.disabled = false;
-                    document.getElementById('unlockHint').textContent = '👆 Next: ' + STEPS[step].label;
-                } else {
-                    const btnUnlock = document.getElementById('btnUnlock');
-                    btnUnlock.disabled = false;
-                    btnUnlock.style.opacity = '1';
-                    btnUnlock.style.cursor = 'pointer';
-                    document.getElementById('unlockHint').textContent = '🔓 Now tap Unlock to get the download link!';
-                }
-            }
-
-            function handleUnlock() {
-                if (currentStep < STEPS.length) return;
-                window.open(AD_URL, '_blank', 'noopener');
-
-                unlocked = true;
-                const btnDl = document.getElementById('btnDownload');
-                const btnUnlock = document.getElementById('btnUnlock');
-
-                btnDl.classList.remove('locked');
-                btnDl.innerHTML = '⬇️ Download IPA <span class="arrow">↓</span>';
-
-                btnUnlock.className = 'btn-unlock done';
-                btnUnlock.textContent = '✅ Unlocked!';
-                btnUnlock.disabled = true;
-
-                document.getElementById('unlockHint').textContent = '✅ Tap Download IPA to get the file';
-            }
-
-            function handleDownload(e) {
-                e.preventDefault();
-                if (!unlocked) return;
-                if (ipaUrl && ipaUrl !== '#') {
-                    const shortlinkPrefix = 'https://vuotlink.net/st?api=4e2b672bf2a8ba8ead742b4f9c07db7e690505a2&url=';
-                    window.location.href = shortlinkPrefix + encodeURIComponent(ipaUrl);
-                }
-            }
-
-            loadUpdate();
-        </script>
-
+        buildCards();
+        loadUpdate();
+    </script>
 </body>
 
 </html>
