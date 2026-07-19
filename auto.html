@@ -407,9 +407,15 @@
         /* udid type cards */
         .type-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             margin-bottom: 18px
+        }
+
+        @media(max-width:640px) {
+            .type-cards {
+                grid-template-columns: 1fr;
+            }
         }
 
         .type-card {
@@ -748,7 +754,7 @@
                         style="color:#c4b5fd;font-size:10.5px">8-4-4-4-12</code> hex format</span>
             </div>
 
-            <!-- 2 loại UDID -->
+            <!-- 3 loại UDID -->
             <div class="type-cards">
                 <div class="type-card cyan">
                     <div class="tc-label">📱 New UDID</div>
@@ -759,6 +765,12 @@
                     <div class="tc-label">📱 Standard UUID</div>
                     <div class="tc-val">65F2C396-C382-40D0-BE4E-54E2F4ADF8C8</div>
                     <div class="tc-desc">8-4-4-4-12 (36 chars)</div>
+                </div>
+                <div class="type-card" style="border-color:rgba(251,191,36,.25);">
+                    <div class="tc-label">📱 iOS UDID</div>
+                    <div class="tc-val" style="font-size:9px;letter-spacing:-.2px;">
+                        95664b65bd04ca07f9a5c47f7d0d3b9623a3f63d</div>
+                    <div class="tc-desc">40 hex chars</div>
                 </div>
             </div>
 
@@ -837,13 +849,17 @@
 
         function validateUdid(raw) {
             const v = raw.trim().toUpperCase();
+            // UUID format 8-4-4-4-12
             if (/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(v))
                 return { ok: true, clean: v, type: 'UUID (8-4-4-4-12)', kind: 'uuid' };
+            // New UDID format 8-16
             if (/^[0-9A-F]{8}-[0-9A-F]{16}$/.test(v))
                 return { ok: true, clean: v, type: 'UDID (8-16)', kind: 'udid_new' };
             const stripped = v.replace(/-/g, '');
+            // UDID 40 hex chars (iOS style)
             if (/^[0-9A-F]{40}$/.test(stripped))
-                return { ok: true, clean: v, type: 'UDID (40 hex)', kind: 'uuid' };
+                return { ok: true, clean: v, type: 'UDID (40 hex)', kind: 'udid_40' };
+            // UUID 32 hex (no dashes)
             if (/^[0-9A-F]{32}$/.test(stripped))
                 return { ok: true, clean: v, type: 'UUID (32 hex)', kind: 'uuid' };
             return { ok: false };
@@ -858,7 +874,7 @@
 
             if (!val.trim()) {
                 inp.className = 'udid-input';
-                msg.innerHTML = `<span>💡 Accepted: <code style="color:#a5f3fc;font-size:10.5px">8-16</code> &nbsp;or&nbsp; <code style="color:#c4b5fd;font-size:10.5px">8-4-4-4-12</code> hex format</span>`;
+                msg.innerHTML = `<span>💡 Accepted: <code style="color:#a5f3fc;font-size:10.5px">8-16</code> &nbsp;•&nbsp; <code style="color:#c4b5fd;font-size:10.5px">8-4-4-4-12</code> &nbsp;•&nbsp; <code style="color:#fde047;font-size:10.5px">40 hex</code></span>`;
                 msg.className = 'valid-msg hint';
                 icon.innerText = '📋'; btn.disabled = true; return;
             }
@@ -929,7 +945,8 @@
             const m = String(now.getUTCMonth() + 1).padStart(2, '0');
             const d = String(now.getUTCDate()).padStart(2, '0');
             let part = '';
-            if (deviceKind === 'udid_new') {
+            if (deviceKind === 'udid_new' || deviceKind === 'udid_40') {
+                // For UDID 8-16 format and 40-hex format: take last 10 chars
                 const tail = clean.slice(-10);
                 for (let i = 0; i < code.length; i++) {
                     const pos = parseInt(code[i]);
@@ -937,6 +954,7 @@
                     part += tail[pos];
                 }
             } else {
+                // For UUID: repeat and pick based on code positions
                 let buf = clean;
                 while (buf.length < 40) buf += clean;
                 for (let i = 0; i < code.length; i++) {
