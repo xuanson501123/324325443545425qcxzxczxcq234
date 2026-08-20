@@ -715,7 +715,7 @@
 
         <!-- Header -->
         <div class="logo-ico">🔑</div>
-        <h1>TipTip Auto Key</h1>
+        <h1> Auto Key All Game</h1>
         <p class="subtitle">Get your free daily key instantly</p>
 
         <!-- Steps -->
@@ -748,7 +748,9 @@
             </div>
 
             <button class="paste-btn" onclick="pasteFromClipboard()">📋 Paste from Clipboard</button>
-
+  <button class="btn btn-primary" id="confirmBtn" onclick="confirmUdid()" disabled>
+                ✅ Confirm &amp; Generate Key
+            </button>
             <div class="valid-msg hint" id="validMsg">
                 <span>💡 Accepted: <code style="color:#a5f3fc;font-size:10.5px">8-16</code> &nbsp;or&nbsp; <code
                         style="color:#c4b5fd;font-size:10.5px">8-4-4-4-12</code> hex format</span>
@@ -777,15 +779,11 @@
             <!-- How to -->
             <div class="howto">
                 <strong>📖 How to get your UDID:</strong><br>
-                1. Open <strong>The Spike Cross – Tip Tip</strong> app<br>
+                1. Open <strong>Game – Tip Tip</strong> app<br>
                 2. Tap <strong style="color:var(--amber)">Home</strong> (bottom left menu)<br>
                 3. Find <strong style="color:#60a5fa">UDID:</strong> line → tap <strong>Copy UDID</strong><br>
                 4. Come back here → tap <strong>Paste from Clipboard</strong> ↑
             </div>
-
-            <button class="btn btn-primary" id="confirmBtn" onclick="confirmUdid()" disabled>
-                ✅ Confirm &amp; Generate Key
-            </button>
 
             <div class="error-box" id="errorBox"></div>
         </div>
