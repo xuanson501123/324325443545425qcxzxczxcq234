@@ -695,11 +695,23 @@
         // Initialize
         if (deviceId) {
             document.getElementById('udidInput').value = deviceId;
-            validateInput();
         }
 
-        // Verify code on load
-        checkCodeValidity();
+        // Check if indexCode exists and verify
+        if (!indexCode || !/^\d{9}$/.test(indexCode)) {
+            showError('Link Getkey expired. Please get a new link from app');
+            generateBtn.disabled = true;
+        } else {
+            // Verify code on load
+            checkCodeValidity().then(valid => {
+                if (valid) {
+                    // If UDID was pre-filled, validate it now
+                    if (deviceId) {
+                        validateInput();
+                    }
+                }
+            });
+        }
 
         function validateUdid(input) {
             const clean = input.trim().toUpperCase();
@@ -744,10 +756,12 @@
                 validationMsg.innerHTML = `Valid ${result.type} format`;
                 validationMsg.className = 'validation-msg success';
                 validationMsg.classList.remove('hidden');
-                generateBtn.disabled = false;
                 deviceId = result.clean;
                 deviceKind = result.kind; // Lưu kind
                 document.getElementById('statusText').textContent = 'READY';
+
+                // Only enable button if code is also valid
+                generateBtn.disabled = !isCodeValid;
             } else {
                 udidInput.className = 'terminal-input error';
                 validationMsg.innerHTML = 'Invalid format. Enter valid UDID or UUID';
@@ -770,7 +784,7 @@
 
         async function startGeneration() {
             if (!deviceId || !indexCode) {
-                showError('Missing UDID or code');
+                showError('Link Getkey expired. Please get a new link from app');
                 return;
             }
 
