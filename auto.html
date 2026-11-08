@@ -612,6 +612,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const indexCode = urlParams.get('code');
         let deviceId = urlParams.get('udid') || '';
+        let deviceKind = 'uuid'; // Thêm biến này
         let generatedKey = '';
         let isCodeValid = false;
 
@@ -704,16 +705,16 @@
             const clean = input.trim().toUpperCase();
 
             if (/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(clean)) {
-                return { valid: true, type: 'UUID', clean };
+                return { valid: true, type: 'UUID', clean, kind: 'uuid' };
             }
 
             if (/^[0-9A-F]{8}-[0-9A-F]{16}$/.test(clean)) {
-                return { valid: true, type: 'UDID', clean };
+                return { valid: true, type: 'UDID', clean, kind: 'udid_new' };
             }
 
             const stripped = clean.replace(/-/g, '');
             if (/^[0-9A-F]{40}$/.test(stripped)) {
-                return { valid: true, type: 'UDID', clean };
+                return { valid: true, type: 'UDID', clean, kind: 'udid_40' };
             }
 
             return { valid: false };
@@ -745,6 +746,7 @@
                 validationMsg.classList.remove('hidden');
                 generateBtn.disabled = false;
                 deviceId = result.clean;
+                deviceKind = result.kind; // Lưu kind
                 document.getElementById('statusText').textContent = 'READY';
             } else {
                 udidInput.className = 'terminal-input error';
@@ -830,12 +832,23 @@
             const d = String(now.getUTCDate()).padStart(2, '0');
 
             let part = '';
-            const tail = clean.slice(-10);
 
-            for (let i = 0; i < code.length; i++) {
-                const pos = parseInt(code[i]);
-                if (!isNaN(pos) && pos < tail.length) {
+            if (deviceKind === 'udid_new' || deviceKind === 'udid_40') {
+                // For UDID 8-16 format and 40-hex format: take last 10 chars
+                const tail = clean.slice(-10);
+                for (let i = 0; i < code.length; i++) {
+                    const pos = parseInt(code[i]);
+                    if (isNaN(pos)) continue;
                     part += tail[pos];
+                }
+            } else {
+                // For UUID: repeat and pick based on code positions
+                let buf = clean;
+                while (buf.length < 40) buf += clean;
+                for (let i = 0; i < code.length; i++) {
+                    const pos = parseInt(code[i]);
+                    if (isNaN(pos)) continue;
+                    part += buf[pos % buf.length];
                 }
             }
 
